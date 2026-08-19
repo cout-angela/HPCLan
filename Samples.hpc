@@ -1,0 +1,39 @@
+
+// calcolo dei fattoriali in parallelo
+
+int n = 16 ;
+int result[n] ;
+int j = 0 ;
+int fact(int x){
+    if (x == 0) { 1 } else { x*fact(x-1) }
+    }
+mapred ( i upto n: result[i] = fact(i) )
+while (j < n) {
+    result[0] = result[0] + result[j] ;
+    j = j+1 ;
+    }
+result[0] ;
+
+/*
+
+// calcolo dei fattoriali e di fibonacci in parallelo
+
+int n = 16 ;
+int result[n] ;
+int j = 0 ;
+int fact(int x){
+    if (x == 0) { 1 } else { x*fact(x-1) }
+    }
+int fib(int x){
+    if (x == 0 || x == 1) { 1 }
+    else { fib(x-1) + fib(x-2) }
+    }
+mapred ( i upto n: result[i] =
+    if ((i/2)*2 == i) { fact(i) } else { fib(i) }  // (i/2)*2 == i  e` l'operazione resto 2 == 0 ...
+    )
+while (j < n) {
+    result[0] = result[0] + result[j] ;
+    j = j+1 ;
+    }
+result[0] ;
+*/
