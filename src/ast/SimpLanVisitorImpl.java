@@ -102,7 +102,7 @@ public class SimpLanVisitorImpl extends HPCLanBaseVisitor<Node> {
 		Node condExp = visit(ctx.cond);
 		Node thenExp = visit(ctx.thenBranch);
 		Node elseExp = visit(ctx.elseBranch);
-		return new IfNode(condExp, thenExp, elseExp);
+		return new IfExpNode(condExp, thenExp, elseExp);
 	}
 
 	public Node visitFunExp(FunExpContext ctx) {

@@ -12,16 +12,17 @@ public class FunNode implements Node {
 	private final Type returntype ;
 	private final ArrayList<ParNode> parlist ;
 	private final ArrayList<Node> declist ;
+	private final ArrayList<Node> stmList ;
 	private final Node body ;
 	private ArrowType type ;
-	private int nesting ;
 	private String flabel ;
   
-	public FunNode (String _id, Type _type, ArrayList<ParNode> _parlist, ArrayList<Node> _declist, Node _body) {
+	public FunNode (String _id, Type _type, ArrayList<ParNode> _parlist, ArrayList<Node> _declist, ArrayList<Node> _stmList, Node _body) {
 		id = _id ;
 		returntype = _type;
 		parlist = _parlist ;
 		declist = _declist ;
+		stmList = _stmList ;
 		body = _body ;
 	}
 
@@ -55,6 +56,9 @@ public class FunNode implements Node {
 
 			for (Node dec : declist)
 				errors.addAll(dec.checkSemantics(ST));
+
+			for (Node stm : stmList)
+				errors.addAll(stm.checkSemantics(ST));
 
 			errors.addAll(body.checkSemantics(ST));
 			ST.remove();
@@ -119,11 +123,7 @@ public class FunNode implements Node {
 	    			+ "addi SP " + 	declist.size() + "\n"
 	    			+ "popr RA \n"
 	    			+ "addi SP " + 	parlist.size() + "\n" // pop di tutti i parametri
-				    + "pop \n"
-					+ "store FP 0(FP) \n"
-					+ "move FP AL \n"
-					+ "subi AL 1 \n"
-					+ "pop \n"
+				    + "popr FP \n"
 	    			+ "rsub RA \n" 
 	    		);
 	    

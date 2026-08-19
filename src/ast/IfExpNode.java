@@ -6,22 +6,31 @@ import evaluator.HPCLanlib;
 import semanticanalysis.SemanticError;
 import semanticanalysis.SymbolTable;
 
-public class IfNode implements Node {
+public class IfExpNode implements Node {
 	private final Node guard ;
+	private final ArrayList<Node> thenstmList ;
+	private final ArrayList<Node> elsestmList ;
 	private final Node thenbranch ;
 	private final Node elsebranch ;
   
-	public IfNode (Node _guard, Node _thenbranch, Node _elsebranch) {
+	public IfExpNode (Node _guard,   ArrayList<Node> _thenstmList,  ArrayList<Node> _elsestmList, Node _thenbranch, Node _elsebranch) {
     	guard = _guard ;
+    	thenstmList = _thenstmList ;
+    	elsestmList = _elsestmList ;
     	thenbranch = _thenbranch ;
     	elsebranch = _elsebranch ;
-  }
+	}
   
    @Override
   public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
 	  ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 	  
 	  errors.addAll(guard.checkSemantics(ST));
+
+	  for (Node stm : thenstmList)
+		  errors.addAll(stm.checkSemantics(ST));
+	  for (Node stm : elsestmList)
+		  errors.addAll(stm.checkSemantics(ST));
 	  errors.addAll(thenbranch.checkSemantics(ST));
 	  errors.addAll(elsebranch.checkSemantics(ST));
 	  
@@ -30,6 +39,17 @@ public class IfNode implements Node {
   
 	public Type typeCheck() {
 		if (guard.typeCheck() instanceof BoolType) {
+			for (Node stm : elsestmList)
+		  		if(stm.typeCheck() != null){
+					System.out.println("Type Error: non void statement in else branch of if expression	");
+        			return new ErrorType() ;
+				}
+			for (Node stm : thenstmList)
+		  		if(stm.typeCheck() != null){
+					System.out.println("Type Error: non void statement in then branch of if expression");
+        			return new ErrorType() ;
+				}
+
 			Type thenexp = thenbranch.typeCheck() ;
 			Type elseexp = elsebranch.typeCheck() ;
 			if (thenexp.getClass().equals(elseexp.getClass()))
@@ -47,12 +67,27 @@ public class IfNode implements Node {
   	public String codeGeneration() {
   		String lthen = HPCLanlib.freshLabel(); 
   		String lend = HPCLanlib.freshLabel();
+
+		String thenStmCode = "" ;
+	    if (thenstmList.size() != 0) {
+	    		for (Node stm:thenstmList){
+	    			thenStmCode = thenStmCode + stm.codeGeneration();
+	    		}
+ 	    }
+		String elseStmCode = "" ;
+	    if (elsestmList.size() != 0) {
+	    		for (Node stm:elsestmList){
+	    			elseStmCode = elseStmCode + stm.codeGeneration();
+	    		}
+ 	    }
   		return guard.codeGeneration() +
 			 "storei T1 1 \n" +
-			 "beq A0 T1 "+ lthen + "\n" +			  
+			 "beq A0 T1 "+ lthen + "\n" +
+			 elseStmCode +		  
 			 elsebranch.codeGeneration() +
 			 "b " + lend + "\n" +
 			 lthen + ":\n" +
+			 thenStmCode +
 			 thenbranch.codeGeneration() +
 	         lend + ":\n" ; 
   	}

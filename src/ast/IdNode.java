@@ -34,9 +34,11 @@ public class IdNode implements Node {
   
 	public String codeGeneration() {
 	    return 
-		       "move AL T1 \n"
-		       + "subi T1 " + type.getoffset() +"\n" //metto offset sullo stack
-			   + "store A0 0(T1) \n" ; //carico sullo stack il valore all'indirizzo ottenuto
+		       //"subi FP " + type.getoffset() +"\n" //metto offset sullo stack
+			   // "move FP T1 \n"
+		      // + "subi T1 " + type.getoffset() +"\n" //metto offset sullo stack
+			   //+ "store A0 0(T1) \n" ; //carico sullo stack il valore all'indirizzo ottenuto
+			   "store A0 " + type.getoffset() +"(FP) \n" ; //carico sullo stack il valore all'indirizzo ottenuto
 	}
 
 	public String toPrint(String s) {

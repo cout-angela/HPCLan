@@ -45,7 +45,6 @@ public class GeqNode implements Node {
                 "storei A0 0 \n" +
                 "b " + cont_lab + " \n" +
                 true_lab + ": \n storei A0 1 \n" +
-                "b " + cont_lab + " \n" +
                 cont_lab + ": \n";
     }
 

@@ -12,42 +12,42 @@ grammar HPCLan ;
 prog   : dec* stm* exp ';'
        ;
 
-simpledec   : type ('const')? ID '=' exp ';'                                     #idDec
-            | type ID '[' (INT | ID) ']' ';'                                     #arrayDec
+simpledec   : type ('const')? ID '=' exp ';'                                     #idDec  //-> DecNode
+            | type ID '[' (INT | ID) ']' ';'                                     #arrayDec 
             ;
 
 dec    : simpledec                                                               #simpleDec
-       | type ID '(' ( param ( ',' param)* )? ')' '{' simpledec* stm* exp '}'    #funDec
+       | type ID '(' ( param ( ',' param)* )? ')' '{' simpledec* stm* exp '}'    #funDec //-> TODO() FunNode
        ;
 
-param  : type ID ;
+param  : type ID ; //->ParNode (? usati per passaggio di parametri fun - per getType e getId)
 
-type   : 'int'
-       | 'bool'
+type   : 'int' //-> IntType
+       | 'bool' //-> BoolType
        ;
 
 stm    : ID '=' exp ';'
        | ID '[' exp ']' '=' exp ';'
-       | 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')?
+       | 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')?  //-> TODO() IfStmNode // ? = 0 o 1
        | 'while' '(' exp ')' '{' stm+ '}'
        | 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'
        ;
 
-exp    :  left=exp op=('*' | '/') right=exp
-       | left=exp op=('+' | '-') right=exp
-       | left=exp op=('==' | '>=' | '<=' | '>' | '<' | '!=') right=exp
-       | left=exp op=('&&' | '||') right=exp
+exp    :  left=exp op=('*' | '/') right=exp //-> DivNode, MultNode
+       | left=exp op=('+' | '-') right=exp //-> MinusNode, PlusNode
+       | left=exp op=('==' | '>=' | '<=' | '>' | '<' | '!=') right=exp //EqualNode, GeqNode, GtNode, LeqNode, LtNode
+       | left=exp op=('&&' | '||') right=exp //->AndNode, OrNode
        | value
        ;
 
-value  :  op=('+' | '-' | '!') value            #signedVal
+value  :  op=('+' | '-' | '!') value            #signedVal //-> NotNode, UMinusNode
        | '(' exp ')'                            #baseExp
-       | 'if' cond=exp '{' thenBranch= stm* exp '}' 'else' '{' elseBranch= stm* exp '}'  #ifExp
-       | ID '(' (exp (',' exp)* )? ')'          #funExp
+       | 'if' cond=exp '{' thenBranch= stm* exp '}' 'else' '{' elseBranch= stm* exp '}'  #ifExp //-> IfExpNode
+       | ID '(' (exp (',' exp)* )? ')'          #funExp //-> CallNode
        | ID '[' exp ']'                         #arrayExp
-       | ID                                     #varExp
-       | INT                                    #intVal
-       | BOOL                                   #boolVal
+       | ID                                     #varExp //->IdNode
+       | INT                                    #intVal //->IntNode
+       | BOOL                                   #boolVal //->BoolNode
        ;
 
 /*------------------------------------------------------------------
