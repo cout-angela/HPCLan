@@ -62,34 +62,6 @@ public class FunNode implements Node {
 
 			errors.addAll(body.checkSemantics(ST));
 			ST.remove();
-
-			/*
-			HashMap<String,STentry> HM = new HashMap<String,STentry>() ;
-			ArrayList<Type> partypes = new ArrayList<Type>() ;
-
-			ST.add(HM);
-
-			for (ParNode arg : parlist){
-    	  			partypes.add(arg.getType());
-    	  			if (ST.top_lookup(arg.getId()))
-    	  					errors.add(new SemanticError("Parameter id " + arg.getId() + " already declared")) ;
-    	  			else ST.insert(arg.getId(), arg.getType(), nesting+1, "") ;
-    	  		}
-
-			type = new ArrowType(partypes, returntype) ;
-
-			ST.increaseoffset() ; // aumentiamo di 1 l'offset per far posto al return value
-			for (Node dec : declist)
-  				errors.addAll(dec.checkSemantics(ST, nesting+1));
-			
-			errors.addAll(body.checkSemantics(ST, nesting+1));
-			ST.remove();
-			
-			flabel = HPCLanlib.freshFunLabel() ;
-			
-			ST.insert(id, type, nesting, flabel) ;
-
-			 */
 		}
 		return errors ; // problemi con la generazione di codice!
 	}
@@ -98,6 +70,9 @@ public class FunNode implements Node {
 		if (declist!=null) 
 			for (Node dec:declist)
 				dec.typeCheck();
+		if (stmList!=null) 
+			for (Node stm:stmList)
+				stm.typeCheck();
 		if ( (body.typeCheck()).getClass().equals(returntype.getClass())) 
     			return null ;
 		else {
@@ -114,11 +89,18 @@ public class FunNode implements Node {
 	    			declCode = declCode + dec.codeGeneration();
 	    		}
  	    }
+		String stmCode = "" ;
+	    if (stmList.size() != 0) {
+	    		for (Node stm:stmList){
+	    			stmCode = stmCode + stm.codeGeneration();
+	    		}
+ 	    }
 	     
 	    HPCLanlib.putCode(
 	    			flabel + ":\n"
 	    			+ "pushr RA \n"
 	    			+ declCode
+					+ stmCode
 	    			+ body.codeGeneration()
 	    			+ "addi SP " + 	declist.size() + "\n"
 	    			+ "popr RA \n"
@@ -132,16 +114,22 @@ public class FunNode implements Node {
   
   public String toPrint(String s) {
 		String parlstr="";
-		for (Node par:parlist){
-		  parlstr += par.toPrint(s);
-		}
+		if (parlist!=null) 
+			for (Node par:parlist){
+			parlstr += par.toPrint(s);
+			}
 		String declstr= "";
 		if (declist!=null) 
 		  for (Node dec:declist)
 		    declstr+=dec.toPrint(s+" ");
+		String stmstr= "";
+		if (stmList!=null)
+		  for (Node stm:stmList)
+		    stmstr+=stm.toPrint(s+" ");
 	    return s+"Fun " + id +": " + returntype.toPrint(" ") + "\n\t"
 			   +parlstr + "\n\t"
-		   	   +declstr
+		   	   +declstr + "\n\t"
+			   +stmstr
 		   	   + "\n"
 	           +body.toPrint(s+"  ") ;
 	  }

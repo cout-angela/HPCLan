@@ -9,7 +9,7 @@ grammar HPCLan ;
  * PARSER RULES
  *------------------------------------------------------------------*/
 
-prog   : dec* stm* exp ';'
+prog   : dec* stm* exp ';' //-> ProgNode
        ;
 
 simpledec   : type ('const')? ID '=' exp ';'                                     #idDec  //-> DecNode
@@ -17,7 +17,7 @@ simpledec   : type ('const')? ID '=' exp ';'                                    
             ;
 
 dec    : simpledec                                                               #simpleDec
-       | type ID '(' ( param ( ',' param)* )? ')' '{' simpledec* stm* exp '}'    #funDec //-> TODO() FunNode
+       | type ID '(' ( param ( ',' param)* )? ')' '{' simpledec* stm* exp '}'    #funDec //-> FunNode
        ;
 
 param  : type ID ; //->ParNode (? usati per passaggio di parametri fun - per getType e getId)
@@ -28,19 +28,19 @@ type   : 'int' //-> IntType
 
 stm    : ID '=' exp ';'
        | ID '[' exp ']' '=' exp ';'
-       | 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')?  //-> TODO() IfStmNode // ? = 0 o 1
+       | 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')?  //-> IfStmNode // ? = 0 o 1
        | 'while' '(' exp ')' '{' stm+ '}'
        | 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'
        ;
 
 exp    :  left=exp op=('*' | '/') right=exp //-> DivNode, MultNode
        | left=exp op=('+' | '-') right=exp //-> MinusNode, PlusNode
-       | left=exp op=('==' | '>=' | '<=' | '>' | '<' | '!=') right=exp //EqualNode, GeqNode, GtNode, LeqNode, LtNode
+       | left=exp op=('==' | '>=' | '<=' | '>' | '<' | '!=') right=exp //EqualNode, GeqNode, GtNode, LeqNode, LtNode, UnEqualNode
        | left=exp op=('&&' | '||') right=exp //->AndNode, OrNode
        | value
        ;
 
-value  :  op=('+' | '-' | '!') value            #signedVal //-> NotNode, UMinusNode
+value  :  op=('+' | '-' | '!') value            #signedVal //-> NotNode, UMinusNode, NotNode
        | '(' exp ')'                            #baseExp
        | 'if' cond=exp '{' thenBranch= stm* exp '}' 'else' '{' elseBranch= stm* exp '}'  #ifExp //-> IfExpNode
        | ID '(' (exp (',' exp)* )? ')'          #funExp //-> CallNode
