@@ -1,4 +1,4 @@
-// Generated from d:/University/CLP/HPCLan/HPCLan/src/parser/HPCLan.g4 by ANTLR 4.13.1
+// Generated from c:/Users/utente/Documents/GitHub/HPCLan/src/parser/HPCLan.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -191,6 +191,7 @@ public class HPCLanParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class IdDecContext extends SimpledecContext {
+		public Token c;
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
@@ -233,7 +234,7 @@ public class HPCLanParser extends Parser {
 				if (_la==T__1) {
 					{
 					setState(32);
-					match(T__1);
+					((IdDecContext)_localctx).c = match(T__1);
 					}
 				}
 

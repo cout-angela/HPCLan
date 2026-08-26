@@ -19,33 +19,46 @@ import parser.HPCLanParser.TypeContext;
 import parser.HPCLanParser.VarExpContext;
 import parser.HPCLanParser.SignedValContext;
 
-public class SimpLanVisitorImpl extends HPCLanBaseVisitor<Node> {
+public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
 
-	public Node visitLetInExp(LetInExpContext ctx) {
+	public Node visitProg(LetInExpContext ctx) {
 		ArrayList<Node> declarations = new ArrayList<Node>();
+		ArrayList<Node> statements = new ArrayList<Node>();
 
 		// visit all nodes corresponding to declarations inside the let context and store them in
 		// declarations notice that the ctx.let().dec() returns a list because of the use of * or +
 		// in the grammar
 		for (DecContext dc : ctx.let().dec())
 			declarations.add( visit(dc) );
+		for (StmContext sc : ctx.let().stm())
+			statements.add( visit(sc) );
 
 		Node exp = visit( ctx.exp() );
 
-		return new ProgLetInNode(declarations, exp) ;
+		return new ProgNode(declarations, statements, exp) ;
 	}
 
-	public Node visitSingleExp(SingleExpContext ctx) {
-		//simply return the result of the visit to the inner exp
-		return new ProgNode(visit(ctx.exp()));
-	}
-
-	public Node visitIdInit(IdInitContext ctx) {
+	public Node visitIdDec(IdDecContext ctx) {
 		Node typeNode = visit(ctx.type()); //visit the type
 		Node expNode = visit(ctx.exp()); //visit the exp
-		return new DecNode(ctx.ID().getText(), typeNode, expNode); //build and return the varNode
+		if (ctx.c == null){
+			return new DecNode(ctx.ID().getText(), typeNode, expNode); //build and return the varNode
+		}
+			
+		return new ConstDecNode(ctx.ID().getText(), typeNode, expNode); //build and return the varNode
 	}
 
+	public Node visitArrayDec(ArrayDecContext ctx) {
+		Node typeNode = visit(ctx.type());
+		String name   = ctx.ID(0).getText();
+
+		if (ctx.INT() != null) {
+			return new ArrayDecNode(name, typeNode, new IntNode(parseInt(ctx.INT().getText())));
+		}
+
+		return new ArrayDecNode(name, typeNode, new IdNode( ctx.ID(1).getText()) ); 
+	}
+	
 	public Node visitFunDec(FunDecContext ctx) {
 		ArrayList<ParNode> _param = new ArrayList<ParNode>() ;
 		for (ParamContext vc : ctx.param()) // build the list of parameters with the types

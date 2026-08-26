@@ -44,5 +44,12 @@ public class IdNode implements Node {
 	public String toPrint(String s) {
 		return s+"Id:" + id  ;
 	}
+
+	public Integer constValue(SymbolTable ST) {
+	    STentry e = ST.lookup(id);
+		if (e == null) return null; 
+		if (!e.isConstant()) return null; 
+		return e.getValue();   
+	}
   
 }  

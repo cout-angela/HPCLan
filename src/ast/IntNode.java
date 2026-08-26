@@ -27,4 +27,8 @@ public class IntNode implements Node {
 	public String toPrint(String s) {
 	    return s + val;
 	}
+
+	public Integer constValue(SymbolTable ST) {
+		return val;
+	}
 }  

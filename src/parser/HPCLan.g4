@@ -1,4 +1,4 @@
-grammar HPCLan ;
+grammar HPCLan;
 
 @lexer::members {
    //there is a much better way to do this, check the ANTLR guide
@@ -7,62 +7,68 @@ grammar HPCLan ;
 
 /*------------------------------------------------------------------
  * PARSER RULES
- *------------------------------------------------------------------*/
+ ------------------------------------------------------------------
+ */
 
-prog   : dec* stm* exp ';' //-> ProgNode
-       ;
+prog: dec* stm* exp ';'; //-> ProgNode
 
-simpledec   : type ('const')? ID '=' exp ';'                                     #idDec  //-> DecNode
-            | type ID '[' (INT | ID) ']' ';'                                     #arrayDec 
-            ;
+simpledec:
+	type c = 'const'? ID '=' exp ';'	# idDec //-> DecNode
+	| type ID '[' (INT | ID) ']' ';'	# arrayDec;
 
-dec    : simpledec                                                               #simpleDec
-       | type ID '(' ( param ( ',' param)* )? ')' '{' simpledec* stm* exp '}'    #funDec //-> FunNode
-       ;
+dec:
+	simpledec																# simpleDec
+	| type ID '(' (param ( ',' param)*)? ')' '{' simpledec* stm* exp '}'	# funDec; //-> FunNode
 
-param  : type ID ; //->ParNode (? usati per passaggio di parametri fun - per getType e getId)
+param:
+	type ID; //->ParNode (? usati per passaggio di parametri fun - per getType e getId)
 
-type   : 'int' //-> IntType
-       | 'bool' //-> BoolType
-       ;
+type:
+	'int' //-> IntType
+	| 'bool'; //-> BoolType
 
-stm    : ID '=' exp ';'
-       | ID '[' exp ']' '=' exp ';'
-       | 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')?  //-> IfStmNode // ? = 0 o 1
-       | 'while' '(' exp ')' '{' stm+ '}'
-       | 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'
-       ;
+stm:
+	ID '=' exp ';'
+	| ID '[' exp ']' '=' exp ';'
+	| 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')? //-> IfStmNode // ? = 0 o 1
+	| 'while' '(' exp ')' '{' stm+ '}'
+	| 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')';
 
-exp    :  left=exp op=('*' | '/') right=exp //-> DivNode, MultNode
-       | left=exp op=('+' | '-') right=exp //-> MinusNode, PlusNode
-       | left=exp op=('==' | '>=' | '<=' | '>' | '<' | '!=') right=exp //EqualNode, GeqNode, GtNode, LeqNode, LtNode, UnEqualNode
-       | left=exp op=('&&' | '||') right=exp //->AndNode, OrNode
-       | value
-       ;
+exp:
+	left = exp op = ('*' | '/') right = exp //-> DivNode, MultNode
+	| left = exp op = ('+' | '-') right = exp //-> MinusNode, PlusNode
+	| left = exp op = ('==' | '>=' | '<=' | '>' | '<' | '!=') right = exp
+	//EqualNode, GeqNode, GtNode, LeqNode, LtNode, UnEqualNode
+	| left = exp op = ('&&' | '||') right = exp //->AndNode, OrNode
+	| value;
 
-value  :  op=('+' | '-' | '!') value            #signedVal //-> NotNode, UMinusNode, NotNode
-       | '(' exp ')'                            #baseExp
-       | 'if' cond=exp '{' thenBranch= stm* exp '}' 'else' '{' elseBranch= stm* exp '}'  #ifExp //-> IfExpNode
-       | ID '(' (exp (',' exp)* )? ')'          #funExp //-> CallNode
-       | ID '[' exp ']'                         #arrayExp
-       | ID                                     #varExp //->IdNode
-       | INT                                    #intVal //->IntNode
-       | BOOL                                   #boolVal //->BoolNode
-       ;
+value:
+	op = ('+' | '-' | '!') value															# signedVal //-> NotNode, UMinusNode, NotNode
+	| '(' exp ')'																			# baseExp
+	| 'if' cond = exp '{' thenBranch = stm* exp '}' 'else' '{' elseBranch = stm* exp '}'	# ifExp
+	//-> IfExpNode
+	| ID '(' (exp (',' exp)*)? ')'	# funExp //-> CallNode
+	| ID '[' exp ']'				# arrayExp
+	| ID							# varExp //->IdNode
+	| INT							# intVal //->IntNode
+	| BOOL							# boolVal; //->BoolNode
 
 /*------------------------------------------------------------------
  * LEXER RULES
- *------------------------------------------------------------------*/
+ ------------------------------------------------------------------
+ */
 
-BOOL            : 'true' | 'false'          ;
-INT             : '0' | [1-9][0-9]*         ;
-ID              : [a-zA-Z] [a-zA-Z0-9_]*    ;
+BOOL: 'true' | 'false';
+INT: '0' | [1-9][0-9]*;
+ID: [a-zA-Z] [a-zA-Z0-9_]*;
 
 //ESCAPE SEQUENCES
-WS              : (' '|'\t'|'\n'|'\r')-> skip;
-LINECOMENTS    : '//' (~('\n'|'\r'))* -> skip;
-BLOCKCOMENTS    : '/*'( ~('/'|'*')|'/'~'*'|'*'~'/')* '*/' -> skip;
+WS: (' ' | '\t' | '\n' | '\r') -> skip;
+LINECOMENTS: '//' (~('\n' | '\r'))* -> skip;
+BLOCKCOMENTS:
+	'/*' (~('/' | '*') | '/' ~'*' | '*' ~'/')* '*/' -> skip;
 
- //VERY SIMPLISTIC ERROR CHECK FOR THE LEXING PROCESS, THE OUTPUT GOES DIRECTLY TO THE TERMINAL
- //THIS IS WRONG!!!!
-ERR     : . { System.out.println("Invalid char: "+ getText()); lexicalErrors++; } -> channel(HIDDEN);
+//VERY SIMPLISTIC ERROR CHECK FOR THE LEXING PROCESS, THE OUTPUT GOES DIRECTLY TO THE TERMINAL THIS
+// IS WRONG!!!!
+ERR:
+	. { System.out.println("Invalid char: "+ getText()); lexicalErrors++; } -> channel(HIDDEN);

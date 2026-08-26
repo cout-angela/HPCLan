@@ -1,4 +1,5 @@
-// Generated from d:/University/CLP/HPCLan/HPCLan/src/parser/HPCLan.g4 by ANTLR 4.13.1
+// Generated from /Users/laneve/Documents/dev/CLP_2025-26/HPCLan/src/parser/HPCLan.g4 by ANTLR 4.13.1
+package parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;

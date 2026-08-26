@@ -13,4 +13,8 @@ public interface Node {
 
 	String toPrint(String s);
 
+	default Integer constValue(SymbolTable ST){
+		return null;
+	}
+
 }  

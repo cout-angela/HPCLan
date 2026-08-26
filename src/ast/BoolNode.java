@@ -29,4 +29,8 @@ public class BoolNode implements Node {
 		return s + val;
 	}
 
+	public Integer constValue(SymbolTable ST) {
+		return val ? 1 : 0;
+	}
+
 }  
