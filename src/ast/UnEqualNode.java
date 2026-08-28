@@ -15,14 +15,16 @@ public class UnEqualNode implements Node {
         right = _right ;
     }
 
-    public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
+    @Override
+    public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
-        errors.addAll(left.checkSemantics(ST));
-        errors.addAll(right.checkSemantics(ST));
+        errors.addAll(left.checkSemantics(ST, _nesting));
+        errors.addAll(right.checkSemantics(ST, _nesting));
 
         return errors;
     }
 
+    @Override
     public Type typeCheck() {
         Type tl = left.typeCheck() ;
         Type tr = right.typeCheck();
@@ -34,6 +36,7 @@ public class UnEqualNode implements Node {
         }
     }
 
+    @Override
     public String codeGeneration() {
         String ltrue = HPCLanlib.freshLabel();
         String lend = HPCLanlib.freshLabel();
@@ -52,5 +55,17 @@ public class UnEqualNode implements Node {
     public String toPrint(String s) {
             return s+"NotEqual\n" + left.toPrint(s+"  ") + right.toPrint(s+"  ") ;
     }
+
+    public Integer constValue(SymbolTable ST) {
+		Integer leftVal = left.constValue(ST);
+		Integer rightVal = right.constValue(ST);
+		  
+		if (leftVal != null && rightVal != null) {
+		    return leftVal != rightVal ? 1 : 0;
+        }
+		
+		  
+		return null;
+	  }
 
 }

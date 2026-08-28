@@ -8,7 +8,7 @@ public class ArrayDecNode implements Node {
 	private final String id;
 	private final Node type;
 	private final Node dim;
-	private final Integer valueDim ;
+	private Integer valueDim ;
 
 	public ArrayDecNode(String _id, Node _type, Node _dim ) {
 		id = _id ;
@@ -16,10 +16,11 @@ public class ArrayDecNode implements Node {
 		dim = _dim ;
 	}
   
+	@Override
 	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
    		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
-		st = ST.top_lookup(id) ;
-        if (st)
+		
+        if (ST.top_lookup(id))
         	errors.add(new SemanticError("Var id " + id + " already declared"));
 		else {
 			errors.addAll(dim.checkSemantics(ST, _nesting)) ;
@@ -31,13 +32,13 @@ public class ArrayDecNode implements Node {
 			
 			else ST.insert(id, (Type) type,"", valueDim, null, _nesting) ; //TODO(): aggiungere dimensione array come flag di symbol table, 
 			
-			
+		}
         //else ST.insert(id, (Type) type,"") ; //TODO(): aggiungere dimensione array come flag di symbol table
-
         return errors ;
 	}
   
-	public Type typeCheck () {
+	@Override
+	public Type typeCheck() {
 		if (dim.typeCheck() instanceof IntType)
 			return null ;
 		else {
@@ -46,11 +47,13 @@ public class ArrayDecNode implements Node {
 		}     
 	}
   
+	@Override
 	public String codeGeneration() {
 		return "subi SP "+ valueDim +"\n" ;
 				
 	}  
     
+	@Override
 	public String toPrint(String s) {
 		return s + "Array:" + id + type.toPrint(" ")  + dim.toPrint(s+" ") + "\t" ;
 	}

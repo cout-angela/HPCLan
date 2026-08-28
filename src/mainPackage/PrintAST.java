@@ -3,14 +3,14 @@ package mainPackage;
 import ast.ErrorType;
 import ast.Node;
 import ast.SVMVisitorImpl;
-import ast.SimpLanVisitorImpl;
+import ast.HPCLanVisitorImpl;
 import evaluator.ExecuteVM;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import parser.SVMLexer;
 import parser.SVMParser;
-import parser.SimpLanLexer;
-import parser.SimpLanParser;
+import parser.HPCLanLexer;
+import parser.HPCLanParser;
 import semanticanalysis.SemanticError;
 import semanticanalysis.SymbolTable;
 
@@ -27,11 +27,11 @@ public class PrintAST {
 
         FileInputStream is = new FileInputStream(fileName);
         ANTLRInputStream input = new ANTLRInputStream(is);
-        SimpLanLexer lexer = new SimpLanLexer(input);
+        HPCLanLexer lexer = new HPCLanLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-        SimpLanParser parser = new SimpLanParser(tokens);
-        SimpLanVisitorImpl visitor = new SimpLanVisitorImpl();
+        HPCLanParser parser = new HPCLanParser(tokens);
+        HPCLanVisitorImpl visitor = new HPCLanVisitorImpl();
         Node ast = visitor.visit(parser.prog()); //generazione AST
 
         //SIMPLE CHECK FOR LEXER ERRORS

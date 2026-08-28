@@ -21,22 +21,22 @@ public class IfExpNode implements Node {
     	elsebranch = _elsebranch ;
 	}
   
-   @Override
-  public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
-	  ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
-	  
-	  errors.addAll(guard.checkSemantics(ST));
+   	@Override
+	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
+		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
+		
+		errors.addAll(guard.checkSemantics(ST, _nesting));
 
-	  for (Node stm : thenstmList)
-		  errors.addAll(stm.checkSemantics(ST));
-	  for (Node stm : elsestmList)
-		  errors.addAll(stm.checkSemantics(ST));
-	  errors.addAll(thenbranch.checkSemantics(ST));
-	  errors.addAll(elsebranch.checkSemantics(ST));
-	  
-	  return errors;
-  }
-  
+		for (Node stm : thenstmList)
+			errors.addAll(stm.checkSemantics(ST, _nesting));
+		for (Node stm : elsestmList)
+			errors.addAll(stm.checkSemantics(ST, _nesting));
+		errors.addAll(thenbranch.checkSemantics(ST, _nesting));
+		errors.addAll(elsebranch.checkSemantics(ST, _nesting));
+		
+		return errors;
+	}
+	
 	public Type typeCheck() {
 		if (guard.typeCheck() instanceof BoolType) {
 			for (Node stm : elsestmList)

@@ -7,8 +7,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import evaluator.ExecuteVM;
 import ast.SVMVisitorImpl;
 
-import parser.SimpLanLexer ;
-import parser.SimpLanParser ;
+import parser.HPCLanLexer ;
+import parser.HPCLanParser ;
 import parser.SVMLexer ;
 import parser.SVMParser ;
 

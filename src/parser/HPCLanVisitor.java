@@ -57,11 +57,40 @@ public interface HPCLanVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitType(HPCLanParser.TypeContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link HPCLanParser#stm}.
+	 * Visit a parse tree produced by the {@code asgStm}
+	 * labeled alternative in {@link HPCLanParser#stm}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitStm(HPCLanParser.StmContext ctx);
+	T visitAsgStm(HPCLanParser.AsgStmContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code arrayStm}
+	 * labeled alternative in {@link HPCLanParser#stm}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayStm(HPCLanParser.ArrayStmContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ifStm}
+	 * labeled alternative in {@link HPCLanParser#stm}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfStm(HPCLanParser.IfStmContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code whileStm}
+	 * labeled alternative in {@link HPCLanParser#stm}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhileStm(HPCLanParser.WhileStmContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code mapredStm}
+	 * labeled alternative in {@link HPCLanParser#stm}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMapredStm(HPCLanParser.MapredStmContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link HPCLanParser#exp}.
 	 * @param ctx the parse tree

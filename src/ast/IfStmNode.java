@@ -17,19 +17,19 @@ public class IfStmNode implements Node {
     	elsestmList = _elsestmList ; //TODO: check if the else branch is empty, if so, create a new empty node
 	}
   
-   @Override
-  public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
-	  ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
-	  
-	  errors.addAll(guard.checkSemantics(ST));
+	@Override
+	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
+		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 
-	  for (Node stm : thenstmList)
-		  errors.addAll(stm.checkSemantics(ST));
-	  for (Node stm : elsestmList)
-		  errors.addAll(stm.checkSemantics(ST));
-		  
-	  return errors;
-  }
+		errors.addAll(guard.checkSemantics(ST, _nesting));
+
+		for (Node stm : thenstmList)
+			errors.addAll(stm.checkSemantics(ST, _nesting));
+		for (Node stm : elsestmList)
+			errors.addAll(stm.checkSemantics(ST, _nesting));
+
+		return errors;
+	}
   
 	public Type typeCheck() {
 		if (guard.typeCheck() instanceof BoolType) {
@@ -47,7 +47,7 @@ public class IfStmNode implements Node {
 		} else {
 			System.out.println("Type Error: non boolean condition in if");
 			return new ErrorType() ;
-		}   
+		}
 	}
   
   	public String codeGeneration() {

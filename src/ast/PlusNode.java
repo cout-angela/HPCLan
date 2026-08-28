@@ -14,11 +14,11 @@ public class PlusNode implements Node {
 		right = _right ;
 	}
   
-	public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
+	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
 		  ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 		  
-		  errors.addAll(left.checkSemantics(ST));
-		  errors.addAll(right.checkSemantics(ST));
+		  errors.addAll(left.checkSemantics(ST, _nesting));
+		  errors.addAll(right.checkSemantics(ST, _nesting));
 		  
 		  return errors;
 	}
@@ -45,5 +45,16 @@ public class PlusNode implements Node {
 	public String toPrint(String s) {
 	    return s+"Plus\n" + left.toPrint(s+"  ") + right.toPrint(s+"  ") ; 
 	}
+
+	public Integer constValue(SymbolTable ST) {
+		  Integer leftVal = left.constValue(ST);
+		  Integer rightVal = right.constValue(ST);
+		  
+		  if (leftVal != null && rightVal != null) {
+			  return leftVal + rightVal;
+		  }
+		  
+		  return null;
+	  }
 	  
 }  

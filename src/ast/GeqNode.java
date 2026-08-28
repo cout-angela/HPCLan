@@ -1,10 +1,9 @@
 package ast;
 
 import evaluator.HPCLanlib;
+import java.util.ArrayList;
 import semanticanalysis.SemanticError;
 import semanticanalysis.SymbolTable;
-
-import java.util.ArrayList;
 
 public class GeqNode implements Node {
     private final Node left ;
@@ -15,10 +14,10 @@ public class GeqNode implements Node {
         right = _right ;
     }
 
-    public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
+    public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
-        errors.addAll(left.checkSemantics(ST));
-        errors.addAll(right.checkSemantics(ST));
+        errors.addAll(left.checkSemantics(ST, _nesting));
+        errors.addAll(right.checkSemantics(ST, _nesting));
 
         return errors;
     }
@@ -52,4 +51,14 @@ public class GeqNode implements Node {
         return s+"Geq\n" + left.toPrint(s+"  ") + right.toPrint(s+"  ") ;
     }
 
+    public Integer constValue(SymbolTable ST) {
+		  Integer leftVal = left.constValue(ST);
+		  Integer rightVal = right.constValue(ST);
+		  
+		  if (leftVal != null && rightVal != null) {
+			  return leftVal >= rightVal ? 1 : 0;
+		  }
+		  
+		  return null;
+	  }
 }

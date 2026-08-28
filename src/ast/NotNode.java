@@ -13,9 +13,9 @@ public class NotNode implements Node {
         body = _body ;
     }
 
-    public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
+    public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
-        errors.addAll(body.checkSemantics(ST));
+        errors.addAll(body.checkSemantics(ST, _nesting));
         return errors;
     }
 
@@ -44,5 +44,13 @@ public class NotNode implements Node {
     public String toPrint(String s) {
         return s+"Not\n" + body.toPrint(s+"  ") ;
     }
+
+    public Integer constValue(SymbolTable ST) {
+		  Integer bd = body.constValue(ST);
+		  if (bd != null) {
+              return 1 - bd;
+		  }
+		  return null;
+	}
 
 }

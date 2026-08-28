@@ -22,7 +22,7 @@ public class DecNode implements Node {
         
         if (ST.top_lookup(id))
         	errors.add(new SemanticError("Var id " + id + " already declared"));
-        else ST.insert(id, (Type) type,"", 1, null, _nesting) ;
+        else ST.insert(id, (Type) type,"", 0, null, _nesting) ;
  
         return errors ;
 	}

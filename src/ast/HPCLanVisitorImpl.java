@@ -1,24 +1,36 @@
 package ast;
 
 import java.util.ArrayList;
+import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 import parser.HPCLanBaseVisitor;
 
-import parser.HPCLanParser.BaseExpContext;
-import parser.HPCLanParser.BoolValContext;
-import parser.HPCLanParser.DecContext;
-import parser.HPCLanParser.ExpContext;
-import parser.HPCLanParser.FunDecContext;
-import parser.HPCLanParser.FunExpContext;
+import parser.HPCLanParser.ProgContext;
+import parser.HPCLanParser.SimpledecContext;
 import parser.HPCLanParser.IdDecContext;
-import parser.HPCLanParser.IfExpContext;
-import parser.HPCLanParser.IntValContext;
+import parser.HPCLanParser.ArrayDecContext;
+import parser.HPCLanParser.DecContext;
+import parser.HPCLanParser.SimpleDecContext;
+import parser.HPCLanParser.FunDecContext;
 import parser.HPCLanParser.ParamContext;
 import parser.HPCLanParser.TypeContext;
-import parser.HPCLanParser.VarExpContext;
-import parser.HPCLanParser.SignedValContext;
-import parser.HPCLanParser.ArrayDecContext;
 import parser.HPCLanParser.StmContext;
-import parser.HPCLanParser.ProgContext;
+import parser.HPCLanParser.ExpContext;
+import parser.HPCLanParser.ValueContext;
+import parser.HPCLanParser.BaseExpContext;
+import parser.HPCLanParser.VarExpContext;
+import parser.HPCLanParser.IntValContext;
+import parser.HPCLanParser.IfExpContext;
+import parser.HPCLanParser.SignedValContext;
+import parser.HPCLanParser.ArrayExpContext;
+import parser.HPCLanParser.FunExpContext;
+import parser.HPCLanParser.BoolValContext;
+import parser.HPCLanParser.AsgStmContext;
+import parser.HPCLanParser.WhileStmContext;
+import parser.HPCLanParser.IfStmContext;
+import parser.HPCLanParser.MapredStmContext;
+import parser.HPCLanParser.ArrayStmContext;
+
+
 
 public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
 
@@ -29,6 +41,7 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         // visit all nodes corresponding to declarations inside the let context and store them in
         // declarations notice that the ctx.let().dec() returns a list because of the use of * or +
         // in the grammar
+        
         for (DecContext dc : ctx.dec()) {
             declarations.add(visit(dc));
         }
@@ -51,17 +64,25 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         return new ConstDecNode(ctx.ID().getText(), typeNode, expNode); //build and return the varNode
     }
 
+   
+
     public Node visitArrayDec(ArrayDecContext ctx) {
         Node typeNode = visit(ctx.type());
         String name = ctx.ID(0).getText();
 
         if (ctx.INT() != null) {
-            return new ArrayDecNode(name, typeNode, new IntNode(parseInt(ctx.INT().getText())));
+            return new ArrayDecNode(name, typeNode, new IntNode(Integer.parseInt(ctx.INT().getText())));
         }
 
         return new ArrayDecNode(name, typeNode, new IdNode(ctx.ID(1).getText()));
     }
 
+    public Node visitSimpleDec(SimpleDecContext ctx) {
+        Node typeNode = visit(ctx.simpledec());
+        
+        return typeNode;
+    }
+    
     public Node visitFunDec(FunDecContext ctx) {
         ArrayList<ParNode> _param = new ArrayList<ParNode>();
         for (ParamContext vc : ctx.param()) // build the list of parameters with the types
@@ -70,15 +91,24 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         }
 
         ArrayList<Node> innerDec = new ArrayList<Node>(); // this is for the declarations in the body
-        if (ctx.let() != null) {
-            //if there are visit each dec and add it to the innerDec list
-            for (DecContext dc : ctx.let().dec()) {
-                innerDec.add(visit(dc));
-            }
+        
+        for (SimpledecContext dc : ctx.simpledec()) {
+            innerDec.add(visit(dc));
         }
+
+        ArrayList<Node> stms = new ArrayList<Node>(); // this is for the declarations in the body
+        
+        for (StmContext sc : ctx.stm()) {
+            stms.add(visit(sc));
+        }
+
         Node exp = visit(ctx.exp()); // visit the body
 
-        return new FunNode(ctx.ID().getText(), (Type) visit(ctx.type()), _param, innerDec, exp);
+        return new FunNode(ctx.ID().getText(), (Type) visit(ctx.type()), _param, innerDec, stms, exp);
+    }
+
+    public Node visitParam(ParamContext ctx) {
+        return new ParNode(ctx.ID().getText(), (Type) visit(ctx.type()));
     }
 
     public Node visitType(TypeContext ctx) {
@@ -87,6 +117,47 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         }else {
             return new BoolType();
         }
+    }
+
+    public Node visitAsgStm(AsgStmContext ctx) {
+        Node expNode = visit(ctx.exp()); //visit the exp
+        return new AsgNode(ctx.ID().getText(), expNode);
+    }
+
+    public Node visitArrayStm(ArrayStmContext ctx) {
+        Node index = visit(ctx.exp());
+        return new ArrayStmNode(ctx.ID().getText(), index, visit(ctx.value()));
+    }
+
+    public Node visitWhileStm(WhileStmContext ctx) {
+        Node condExp = visit(ctx.cond);
+        ArrayList<Node> stms = new ArrayList<Node>();
+        for (StmContext sc : ctx.stm()) {
+            stms.add(visit(sc));
+        }
+        return new WhileStmNode(condExp, stms);
+    }
+
+    public Node visitIfStm(IfStmContext ctx) {
+        Node condExp = visit(ctx.cond);
+        ArrayList<Node> thenStms = new ArrayList<Node>();
+        for (StmContext sc : ctx.thenBranch) {
+            thenStms.add(visit(sc));
+        }
+        ArrayList<Node> elseStms = new ArrayList<Node>();
+        for (StmContext sc : ctx.elseBranch) {
+            elseStms.add(visit(sc));
+        }
+        return new IfStmNode(condExp, thenStms, elseStms);
+    }
+
+    public Node visitMapredStm(MapredStmContext ctx) {
+        Node condExp = visit(ctx.cond);
+        ArrayList<Node> stms = new ArrayList<Node>();
+        for (StmContext sc : ctx.stm()) {
+            stms.add(visit(sc));
+        }
+        return new MapredStmNode(condExp, stms);
     }
 
     public Node visitExp(ExpContext ctx) {
@@ -126,8 +197,18 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         }
     }
 
+    public Node visitSignedVal(SignedValContext ctx) {
+        String operator = ctx.op.getText();
+        if (operator.equals("-")) {
+            return new UMinusNode(visit(ctx.value())); 
+        } else if (operator.equals("!")) {
+            return new NotNode(visit(ctx.value())); 
+        } else {
+            return visit(ctx.value()); // operator.equals("+")
+        }
+    }
+
     public Node visitBaseExp(BaseExpContext ctx) {
-        // expression in parentheses — production named #baseExp: remove parentheses
         return visit(ctx.exp());
     }
 
@@ -151,17 +232,18 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
 
         return new CallNode(ctx.ID().getText(), args);
     }
+    
+    public Node visitArrayExp(ArrayExpContext ctx) {
+        // it is an array access — production named #arrayExp: build the subtree of
+        // the index, store the name of the array declare the result
+        //Node index = visit(ctx.exp());
+        //return new ArrayAccessNode(ctx.ID().getText(), index);
+        return new Node();
+    }
 
-    public Node visitSignedVal(SignedValContext ctx) {
-        String operator = ctx.op.getText();
-        if (operator.equals("-")) {
-            return new UMinusNode(visit(ctx.value())); 
-        }else if (operator.equals("!")) {
-            return new NotNode(visit(ctx.value())); 
-        }else {
-            return visit(ctx.value()); // operator.equals("+")
-
-            }}
+    public Node visitVarExp(VarExpContext ctx) {
+        return new IdNode(ctx.ID().getText());
+    }
 
     @Override
     public Node visitIntVal(IntValContext ctx) {
@@ -171,11 +253,6 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
     @Override
     public Node visitBoolVal(BoolValContext ctx) {
         return new BoolNode(Boolean.parseBoolean(ctx.BOOL().getText()));
-    }
-
-    @Override
-    public Node visitVarExp(VarExpContext ctx) {
-        return new IdNode(ctx.getText());
     }
 
 }

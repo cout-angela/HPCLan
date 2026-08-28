@@ -15,14 +15,16 @@ public class OrNode implements Node {
         right = _right ;
     }
 
-    public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
+    @Override
+    public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
-        errors.addAll(left.checkSemantics(ST));
-        errors.addAll(right.checkSemantics(ST));
+        errors.addAll(left.checkSemantics(ST, _nesting));
+        errors.addAll(right.checkSemantics(ST, _nesting));
 
         return errors;
     }
 
+    @Override
     public Type typeCheck() {
         if ((left.typeCheck() instanceof BoolType) && (right.typeCheck() instanceof BoolType) )
             return new BoolType() ;
@@ -32,6 +34,7 @@ public class OrNode implements Node {
         }
     }
 
+    @Override
     public String codeGeneration() {
         String contlab= HPCLanlib.freshLabel();
         return left.codeGeneration() +
@@ -41,8 +44,23 @@ public class OrNode implements Node {
                 contlab + ":\n";
     }
 
+    @Override
     public String toPrint(String s) {
         return s+"Or\n" + left.toPrint(s+"  ") + right.toPrint(s+"  ") ;
     }
 
+    @Override
+    public Integer constValue(SymbolTable ST) {
+		  Integer leftVal = left.constValue(ST);
+		  Integer rightVal = right.constValue(ST);
+		  
+		  if (leftVal != null && rightVal != null) {
+            if (leftVal != 0 || rightVal != 0) {
+                return 1;
+            }
+            return 0;
+		  }
+		  
+		  return null;
+	}
 }

@@ -28,11 +28,12 @@ type:
 	| 'bool'; //-> BoolType
 
 stm:
-	ID '=' exp ';'
-	| ID '[' exp ']' '=' exp ';'
-	| 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')? //-> IfStmNode // ? = 0 o 1
-	| 'while' '(' exp ')' '{' stm+ '}'
-	| 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')';
+	ID '=' exp ';' 														# asgStm
+	| ID '[' exp ']' '=' exp ';' 										# arrayStm
+	| 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')?  			# ifStm//-> IfStmNode // ? = 0 o 1 
+	| 'while' '(' exp ')' '{' stm+ '}' 									# whileStm
+	| 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'  # mapredStm
+	; 					
 
 exp:
 	left = exp op = ('*' | '/') right = exp //-> DivNode, MultNode

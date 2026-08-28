@@ -553,6 +553,18 @@ public class HPCLanParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class StmContext extends ParserRuleContext {
+		public StmContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_stm; }
+	 
+		public StmContext() { }
+		public void copyFrom(StmContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class MapredStmContext extends StmContext {
 		public List<TerminalNode> ID() { return getTokens(HPCLanParser.ID); }
 		public TerminalNode ID(int i) {
 			return getToken(HPCLanParser.ID, i);
@@ -563,20 +575,76 @@ public class HPCLanParser extends Parser {
 		public ExpContext exp(int i) {
 			return getRuleContext(ExpContext.class,i);
 		}
+		public TerminalNode INT() { return getToken(HPCLanParser.INT, 0); }
+		public MapredStmContext(StmContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitMapredStm(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class ArrayStmContext extends StmContext {
+		public TerminalNode ID() { return getToken(HPCLanParser.ID, 0); }
+		public List<ExpContext> exp() {
+			return getRuleContexts(ExpContext.class);
+		}
+		public ExpContext exp(int i) {
+			return getRuleContext(ExpContext.class,i);
+		}
+		public ArrayStmContext(StmContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitArrayStm(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class IfStmContext extends StmContext {
+		public ExpContext exp() {
+			return getRuleContext(ExpContext.class,0);
+		}
 		public List<StmContext> stm() {
 			return getRuleContexts(StmContext.class);
 		}
 		public StmContext stm(int i) {
 			return getRuleContext(StmContext.class,i);
 		}
-		public TerminalNode INT() { return getToken(HPCLanParser.INT, 0); }
-		public StmContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_stm; }
+		public IfStmContext(StmContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitStm(this);
+			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitIfStm(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class WhileStmContext extends StmContext {
+		public ExpContext exp() {
+			return getRuleContext(ExpContext.class,0);
+		}
+		public List<StmContext> stm() {
+			return getRuleContexts(StmContext.class);
+		}
+		public StmContext stm(int i) {
+			return getRuleContext(StmContext.class,i);
+		}
+		public WhileStmContext(StmContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitWhileStm(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class AsgStmContext extends StmContext {
+		public TerminalNode ID() { return getToken(HPCLanParser.ID, 0); }
+		public ExpContext exp() {
+			return getRuleContext(ExpContext.class,0);
+		}
+		public AsgStmContext(StmContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitAsgStm(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -590,6 +658,7 @@ public class HPCLanParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,13,_ctx) ) {
 			case 1:
+				_localctx = new AsgStmContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(87);
@@ -603,6 +672,7 @@ public class HPCLanParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new ArrayStmContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(92);
@@ -622,6 +692,7 @@ public class HPCLanParser extends Parser {
 				}
 				break;
 			case 3:
+				_localctx = new IfStmContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(100);
@@ -681,6 +752,7 @@ public class HPCLanParser extends Parser {
 				}
 				break;
 			case 4:
+				_localctx = new WhileStmContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(123);
@@ -712,6 +784,7 @@ public class HPCLanParser extends Parser {
 				}
 				break;
 			case 5:
+				_localctx = new MapredStmContext(_localctx);
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(135);

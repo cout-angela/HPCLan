@@ -78,7 +78,12 @@ public class SymbolTable {
         STentry idtype = new STentry(type, offs, _label, _dim, _value, _nesting);
         H.put(id, idtype);
         symbol_table.add(H);
-        offset.add(offs + _dim);
+        if (_dim == 0) {
+            if(_value == null) offs ++;
+        } else {
+            offs += _dim;
+        }
+        offset.add(offs);
     }
 
     public void increaseoffset() {

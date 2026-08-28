@@ -18,16 +18,17 @@ public class ProgNode implements Node {
 		exp = _exp;
 	}
   
-	public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {	
+	@Override
+	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {	
 		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 		  
 		for (Node dec : decList)
-				errors.addAll(dec.checkSemantics(ST));
+				errors.addAll(dec.checkSemantics(ST, _nesting));
 
 		for (Node stm : stmList)
-				errors.addAll(stm.checkSemantics(ST));
+				errors.addAll(stm.checkSemantics(ST, _nesting));
 
-		errors.addAll(exp.checkSemantics(ST));
+		errors.addAll(exp.checkSemantics(ST, _nesting));
 		
 		return errors;
 	}
@@ -58,6 +59,8 @@ public class ProgNode implements Node {
 
 		return  "move SP FP  \n"
 				+ "pushr FP \n"
+				+ "move SP AL \n"
+				+ "pushr AL \n"
 				+ declCode
 				+ stmCode 
 				+ exp.codeGeneration() 

@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import semanticanalysis.SemanticError;
 import semanticanalysis.SymbolTable;
-import ast.SimpLanVisitorImpl;
+import ast.HPCLanVisitorImpl;
 import evaluator.ExecuteVM;
 import ast.ErrorType;
 import ast.Node;
@@ -39,7 +39,7 @@ public class OutputAssembler {
             System.out.println("The program was not in the right format. Exiting the compilation process now");
         } else {
             SymbolTable ST = new SymbolTable();
-            ArrayList<SemanticError> errors = ast.checkSemantics(ST);
+            ArrayList<SemanticError> errors = ast.checkSemantics(ST, 0);
             if(errors.size()>0){
                 System.out.println("You had: " + errors.size() + " errors:");
                 for(SemanticError e : errors)

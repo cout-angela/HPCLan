@@ -42,14 +42,14 @@ public class FunNode implements Node {
 
 			type = new ArrowType(partypes, returntype) ;
 			flabel = HPCLanlib.freshFunLabel() ;
-			ST.insert(id, type, flabel, 1, null, nesting) ;
+			ST.insert(id, type, flabel, 0, null, nesting) ;
 
 			ST.add(HM);
 			for (ParNode arg : parlist){
 				if (HM.containsKey(arg.getId()))
 					errors.add(new SemanticError("Parameter id " + arg.getId() + " already declared")) ;
 				else {
-					ST.insert(arg.getId(), arg.getType(), "", 1, null, nesting+1) ;
+					ST.insert(arg.getId(), arg.getType(), "", 0, null, nesting+1) ;
 				}
 			}
 
@@ -99,16 +99,20 @@ public class FunNode implements Node {
  	    }
 	     
 	    HPCLanlib.putCode(
-	    			flabel + ":\n"
-	    			+ "pushr RA \n"
-	    			+ declCode
+	    		flabel + ":\n"
+					+ "pushr RA \n"
+					+ declCode
 					+ stmCode
-	    			+ body.codeGeneration()
-	    			+ "addi SP " + 	declist.size() + "\n"
-	    			+ "popr RA \n"
-	    			+ "addi SP " + 	parlist.size() + "\n" // pop di tutti i parametri
-				    + "popr FP \n"
-	    			+ "rsub RA \n" 
+					+ body.codeGeneration()
+					+ "addi SP " + 	declist.size() + "\n"
+					+ "popr RA \n"
+					+ "addi SP " + 	parlist.size() + "\n" // pop di tutti i parametri
+					+ "pop \n"
+					+ "store FP 0(FP) \n"
+					+ "move FP AL \n"
+					+ "subi AL 1 \n"
+					+ "pop \n"
+					+ "rsub RA \n"
 	    		);
 	    
 		return "push "+ flabel +"\n"; // e` lo stesso che scrivere "push 0 \n" : non ci accede mai

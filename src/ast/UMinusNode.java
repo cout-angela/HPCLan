@@ -12,10 +12,10 @@ public class UMinusNode implements Node {
         body = _body ;
     }
 
-    public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
+    public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
         ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 
-        errors.addAll(body.checkSemantics(ST));
+        errors.addAll(body.checkSemantics(ST, _nesting));
 
         return errors;
     }
@@ -39,5 +39,15 @@ public class UMinusNode implements Node {
     public String toPrint(String s) {
         return s+"Neg\n" + body.toPrint(s+"  ") ;
     }
+
+    public Integer constValue(SymbolTable ST) {
+		Integer bd = body.constValue(ST);
+		  
+		if (bd != null) {
+		    return 0 - bd;
+        }
+		  
+		return null;
+	  }
 
 }
