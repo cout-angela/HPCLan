@@ -9,24 +9,26 @@ public class CallNode implements Node {
 	private final String id ;
 	private STentry entry ; 
 	private final ArrayList<Node> parameters ;
+	private int nesting ;
 
   	public CallNode(String _id, ArrayList<Node> _parameters) {
 		id = _id;
 		parameters = _parameters ;
 	}
 
-	public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
-		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();;
+	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
+		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
+		nesting = _nesting ;
 		STentry tmp = ST.lookup(id) ;
 		if (tmp != null) {
 			entry = tmp ;
 			for (Node par : parameters)
-				errors.addAll(par.checkSemantics(ST));
+				errors.addAll(par.checkSemantics(ST, nesting));
 		} else {
 			errors.add(new SemanticError("Id " + id + " not declared")) ;
 		}
 		return errors;
-  }
+  	}
   
 	public Type typeCheck() {                            
 		Type _type = entry.gettype() ;
@@ -60,12 +62,21 @@ public class CallNode implements Node {
 
 		String updateFP = "addi FP " + parameters.size() + "\n" + "addi FP 1\n";
 
+		String getAR="";
+		for (int i=0; i < nesting - entry.getnesting() ; i++) 
+		    	getAR+="store T1 0(T1) \n";
+
 		// formato AR: control_link + parameters + indirizzo di ritorno + dich_locali
 
 		return  "pushr FP \n"			// carico il frame pointer; decrementa SP a causa della pushr
+				+ "move AL T1\n"		// risalgo la catena statica
+				+ getAR
+				+ "pushr T1 \n"			// salvo sulla pila l'access link statico: si trovera` sempre a FP-1
 				+ parCode 				// calcolo i parametri attuali con l'access link del chiamante
 				+ "move SP FP \n"
 				+ updateFP				// memorizzo in FP il valore SP - parameters.size() - 1
+				+ "move FP AL \n"		// memorizzo in AL l'indirizzo della catena statica che e` FP-1
+				+ "subi AL 1 \n"
 				+ "jsub " + entry.getlabel() + "\n" ;
   }
 
@@ -75,5 +86,7 @@ public class CallNode implements Node {
 			parlstr += par.toPrint(s+"\t") ;
 
 		return s+"Call:" + id + "\n" + parlstr ;
-	} 
+	}
+	
+	 
 }  

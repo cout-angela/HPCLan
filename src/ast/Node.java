@@ -2,19 +2,21 @@ package ast;
 
 import java.util.ArrayList;
 
-import semanticanalysis.SemanticError ;
-import semanticanalysis.SymbolTable ;
+import semanticanalysis.SemanticError;
+import semanticanalysis.SymbolTable;
 
 public interface Node {
 
-	ArrayList<SemanticError> checkSemantics(SymbolTable ST);
-	Type typeCheck();
-	String codeGeneration();
+    ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting);
 
-	String toPrint(String s);
+    Type typeCheck();
 
-	default Integer constValue(SymbolTable ST){
-		return null;
-	}
+    String codeGeneration();
 
-}  
+    String toPrint(String s);
+
+    default Integer constValue(SymbolTable ST) {
+        return null;
+    }
+
+}

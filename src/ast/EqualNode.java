@@ -15,11 +15,11 @@ public class EqualNode implements Node {
 		right = _right ;
 	}
 
-	public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
+	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
 		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 
-		errors.addAll(left.checkSemantics(ST));
-		errors.addAll(right.checkSemantics(ST));
+		errors.addAll(left.checkSemantics(ST, _nesting));
+		errors.addAll(right.checkSemantics(ST, _nesting));
 		  
 		return errors;
 	}
@@ -52,5 +52,14 @@ public class EqualNode implements Node {
 
 	public String toPrint(String s) {
 		return s+"Equal\n" + left.toPrint(s+"  ") + right.toPrint(s+"  ") ; 
+	}
+
+	public Integer constValue(SymbolTable ST) {
+		Integer leftValue = left.constValue(ST);
+		Integer rightValue = right.constValue(ST);
+		if (leftValue != null && rightValue != null) {
+			return (leftValue.equals(rightValue)) ? 1 : 0;
+		}
+		return null; // Return null if either side is not a constant
 	}
 }  

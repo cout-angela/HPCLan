@@ -15,15 +15,16 @@ public class ConstDecNode implements Node {
 		exp = _exp ;
 	}
   
-	public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
+	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
    		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
-        errors.addAll(exp.checkSemantics(ST));
+        errors.addAll(exp.checkSemantics(ST, _nesting)) ;
 
 		if (ST.top_lookup(id))
         	errors.add(new SemanticError("Var id " + id + " already declared"));
         else if(exp.constValue(ST) == null)
 			errors.add(new SemanticError("Const id " + id + " must be initialized with a constant value"));
-        else ST.insert(id, (Type) type,"", 1, exp.constValue(ST)) ;
+		//no offest per constanti, quindi 0 --> il valore non è nella pila ma nella symboltable	
+        else ST.insert(id, (Type) type,"", 0, exp.constValue(ST), _nesting) ;
  
         return errors ;
 	}
@@ -38,8 +39,7 @@ public class ConstDecNode implements Node {
 	}
   
 	public String codeGeneration() {
-		return exp.codeGeneration() +
-				"pushr A0 \n" ;
+		return "";
 	}  
     
 	public String toPrint(String s) {

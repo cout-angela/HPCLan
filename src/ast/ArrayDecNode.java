@@ -16,20 +16,20 @@ public class ArrayDecNode implements Node {
 		dim = _dim ;
 	}
   
-	public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
+	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
    		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 		st = ST.top_lookup(id) ;
         if (st)
         	errors.add(new SemanticError("Var id " + id + " already declared"));
 		else {
-			errors.addAll(dim.checkSemantics(ST));
+			errors.addAll(dim.checkSemantics(ST, _nesting)) ;
 			valueDim = dim.constValue(ST) ;
 			if(valueDim == null)
 				errors.add(new SemanticError("Array id " + id + " must be initialized with a constant value"));
 			else if(valueDim <= 0)
 				errors.add(new SemanticError("Array id " + id + " must be initialized with a positive constant value"));
 			
-			else ST.insert(id, (Type) type,"", valueDim, null) ;
+			else ST.insert(id, (Type) type,"", valueDim, null, _nesting) ; //TODO(): aggiungere dimensione array come flag di symbol table, 
 			
 			
         //else ST.insert(id, (Type) type,"") ; //TODO(): aggiungere dimensione array come flag di symbol table

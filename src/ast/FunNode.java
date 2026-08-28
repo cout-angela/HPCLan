@@ -1,8 +1,7 @@
 package ast;
+import evaluator.HPCLanlib;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import evaluator.HPCLanlib;
 import semanticanalysis.STentry;
 import semanticanalysis.SemanticError;
 import semanticanalysis.SymbolTable;
@@ -16,6 +15,7 @@ public class FunNode implements Node {
 	private final Node body ;
 	private ArrowType type ;
 	private String flabel ;
+	private int nesting ;
   
 	public FunNode (String _id, Type _type, ArrayList<ParNode> _parlist, ArrayList<Node> _declist, ArrayList<Node> _stmList, Node _body) {
 		id = _id ;
@@ -26,9 +26,10 @@ public class FunNode implements Node {
 		body = _body ;
 	}
 
-	public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
+	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
 
 		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
+		nesting = _nesting ;
 		
 		if (ST.top_lookup(id))
 			errors.add(new SemanticError("Identifier " + id + " already declared"));
@@ -41,26 +42,27 @@ public class FunNode implements Node {
 
 			type = new ArrowType(partypes, returntype) ;
 			flabel = HPCLanlib.freshFunLabel() ;
-			ST.insert(id, type, flabel) ;
+			ST.insert(id, type, flabel, 1, null, nesting) ;
 
 			ST.add(HM);
 			for (ParNode arg : parlist){
 				if (HM.containsKey(arg.getId()))
 					errors.add(new SemanticError("Parameter id " + arg.getId() + " already declared")) ;
 				else {
-					ST.insert(arg.getId(), arg.getType(), "") ;
+					ST.insert(arg.getId(), arg.getType(), "", 1, null, nesting+1) ;
 				}
 			}
 
 			ST.increaseoffset() ; // aumentiamo di 1 l'offset per far posto al return value
 
 			for (Node dec : declist)
-				errors.addAll(dec.checkSemantics(ST));
+				errors.addAll(dec.checkSemantics(ST, nesting+1));
 
 			for (Node stm : stmList)
-				errors.addAll(stm.checkSemantics(ST));
+				errors.addAll(stm.checkSemantics(ST, nesting+1));
 
-			errors.addAll(body.checkSemantics(ST));
+			errors.addAll(body.checkSemantics(ST, nesting+1));
+			
 			ST.remove();
 		}
 		return errors ; // problemi con la generazione di codice!

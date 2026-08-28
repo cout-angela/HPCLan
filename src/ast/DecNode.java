@@ -15,13 +15,14 @@ public class DecNode implements Node {
 		exp = _exp ;
 	}
   
-	public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
+	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
    		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
-        errors.addAll(exp.checkSemantics(ST));
+		
+        errors.addAll(exp.checkSemantics(ST, _nesting)) ;
         
         if (ST.top_lookup(id))
         	errors.add(new SemanticError("Var id " + id + " already declared"));
-        else ST.insert(id, (Type) type,"") ;
+        else ST.insert(id, (Type) type,"", 1, null, _nesting) ;
  
         return errors ;
 	}

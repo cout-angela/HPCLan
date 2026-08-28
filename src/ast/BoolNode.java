@@ -13,7 +13,7 @@ public class BoolNode implements Node {
 		val = _val ;
 	}
 
-	public ArrayList<SemanticError> checkSemantics(SymbolTable ST) {
+	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
 		return new ArrayList<SemanticError>();
  	}
 
