@@ -30,10 +30,10 @@ public class ArrayDecNode implements Node {
 			else if(valueDim <= 0)
 				errors.add(new SemanticError("Array id " + id + " must be initialized with a positive constant value"));
 			
-			else ST.insert(id, (Type) type,"", valueDim, null, _nesting) ; //TODO(): aggiungere dimensione array come flag di symbol table, 
+			else ST.insert(id, (Type) type,"", valueDim, null, _nesting) ;  
 			
 		}
-        //else ST.insert(id, (Type) type,"") ; //TODO(): aggiungere dimensione array come flag di symbol table
+        
         return errors ;
 	}
   

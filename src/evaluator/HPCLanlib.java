@@ -12,6 +12,10 @@ public class HPCLanlib {
 	public static String freshFunLabel() { 
 		return "function"+(funLabCount++);
 	} 
+
+	public static String getBoundsErrorLabel() { 
+		return "boundsError";
+	}
   
 	public static void putCode(String c) { 
 		funCode+="\n"+c; //aggiunge una linea vuota di separazione prima di funzione

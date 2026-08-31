@@ -10,49 +10,47 @@ grammar HPCLan;
  ------------------------------------------------------------------
  */
 
-prog: dec* stm* exp ';'; //-> ProgNode
+prog: dec* stm* exp ';'; 																					//-> ProgNode
 
 simpledec:
-	type c = 'const'? ID '=' exp ';'	# idDec //-> DecNode
-	| type ID '[' (INT | ID) ']' ';'	# arrayDec;
+	type c = 'const'? ID '=' exp ';'	# idDec 															//-> DecNode
+	| type ID '[' (INT | ID) ']' ';'	# arrayDec;															//-> ArrayDecNode
 
 dec:
 	simpledec																# simpleDec
-	| type ID '(' (param ( ',' param)*)? ')' '{' simpledec* stm* exp '}'	# funDec; //-> FunNode
+	| type ID '(' (param ( ',' param)*)? ')' '{' simpledec* stm* exp '}'	# funDec; 						//-> FunNode
 
 param:
-	type ID; //->ParNode (? usati per passaggio di parametri fun - per getType e getId)
+	type ID; 																								//-> ParNode (? usati per passaggio di parametri fun - per getType e getId)
 
 type:
-	'int' //-> IntType
-	| 'bool'; //-> BoolType
+	'int' 																									//-> IntType
+	| 'bool'; 																								//-> BoolType
 
 stm:
-	ID '=' exp ';' 														# asgStm
-	| ID '[' exp ']' '=' exp ';' 										# arrayStm
-	| 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')?  			# ifStm//-> IfStmNode // ? = 0 o 1 
-	| 'while' '(' exp ')' '{' stm+ '}' 									# whileStm
-	| 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'  # mapredStm
+	ID '=' exp ';' 														# asgStm							//-> AsgNode
+	| ID '[' exp ']' '=' exp ';' 										# arrayStm							//-> ArrayStmNode
+	| 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')?  			# ifStm								//-> IfStmNode // ? = 0 o 1 
+	| 'while' '(' exp ')' '{' stm+ '}' 									# whileStm							//-> WhileStmNode
+	| 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'  # mapredStm							//-> ARRIVATE QUI
 	; 					
 
 exp:
-	left = exp op = ('*' | '/') right = exp //-> DivNode, MultNode
-	| left = exp op = ('+' | '-') right = exp //-> MinusNode, PlusNode
-	| left = exp op = ('==' | '>=' | '<=' | '>' | '<' | '!=') right = exp
-	//EqualNode, GeqNode, GtNode, LeqNode, LtNode, UnEqualNode
-	| left = exp op = ('&&' | '||') right = exp //->AndNode, OrNode
+	left = exp op = ('*' | '/') right = exp 																//-> DivNode, MultNode
+	| left = exp op = ('+' | '-') right = exp 																//-> MinusNode, PlusNode
+	| left = exp op = ('==' | '>=' | '<=' | '>' | '<' | '!=') right = exp									//-> EqualNode, GeqNode, GtNode, LeqNode, LtNode, UnEqualNode
+	| left = exp op = ('&&' | '||') right = exp 															//-> AndNode, OrNode
 	| value;
 
 value:
-	op = ('+' | '-' | '!') value															# signedVal //-> NotNode, UMinusNode, NotNode
+	op = ('+' | '-' | '!') value															# signedVal 	//-> NotNode, UMinusNode, NotNode
 	| '(' exp ')'																			# baseExp
-	| 'if' cond = exp '{' thenBranch = stm* exp '}' 'else' '{' elseBranch = stm* exp '}'	# ifExp
-	//-> IfExpNode
-	| ID '(' (exp (',' exp)*)? ')'	# funExp //-> CallNode
+	| 'if' cond = exp '{' thenBranch +=stm* exp '}' 'else' '{' elseBranch += stm* exp '}'	# ifExp 		//-> IfExpNode
+	| ID '(' (exp (',' exp)*)? ')'	# funExp 																//-> CallNode
 	| ID '[' exp ']'				# arrayExp
-	| ID							# varExp //->IdNode
-	| INT							# intVal //->IntNode
-	| BOOL							# boolVal; //->BoolNode
+	| ID							# varExp 																//-> IdNode
+	| INT							# intVal 																//-> IntNode
+	| BOOL							# boolVal; 																//-> BoolNode
 
 /*------------------------------------------------------------------
  * LEXER RULES

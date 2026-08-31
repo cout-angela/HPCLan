@@ -125,20 +125,21 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
     }
 
     public Node visitArrayStm(ArrayStmContext ctx) {
-        Node index = visit(ctx.exp());
-        return new ArrayStmNode(ctx.ID().getText(), index, visit(ctx.value()));
+        Node index = visit(ctx.exp(0));
+        Node exp = visit(ctx.exp(1));
+        return new ArrayStmNode(ctx.ID().getText(), exp, index);
     }
 
-    public Node visitWhileStm(WhileStmContext ctx) {
-        Node condExp = visit(ctx.cond);
+     public Node visitWhileStm(WhileStmContext ctx) {
+        Node condExp = visit(ctx.exp());
         ArrayList<Node> stms = new ArrayList<Node>();
         for (StmContext sc : ctx.stm()) {
             stms.add(visit(sc));
         }
         return new WhileStmNode(condExp, stms);
-    }
+    } 
 
-    public Node visitIfStm(IfStmContext ctx) {
+/*     public Node visitIfStm(IfStmContext ctx) {
         Node condExp = visit(ctx.cond);
         ArrayList<Node> thenStms = new ArrayList<Node>();
         for (StmContext sc : ctx.thenBranch) {
@@ -149,16 +150,16 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
             elseStms.add(visit(sc));
         }
         return new IfStmNode(condExp, thenStms, elseStms);
-    }
+    } */
 
-    public Node visitMapredStm(MapredStmContext ctx) {
+/*     public Node visitMapredStm(MapredStmContext ctx) {
         Node condExp = visit(ctx.cond);
         ArrayList<Node> stms = new ArrayList<Node>();
         for (StmContext sc : ctx.stm()) {
             stms.add(visit(sc));
         }
         return new MapredStmNode(condExp, stms);
-    }
+    } */
 
     public Node visitExp(ExpContext ctx) {
         if (ctx.op == null) {
@@ -215,10 +216,26 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
     public Node visitIfExp(IfExpContext ctx) {
         // it is a conditional — production named #ifExp: built the abstract trees for
         // the guard and the branches; store the pointers
+
+        ArrayList<Node> thenStm = new ArrayList<Node>();
+        ArrayList<Node> elseStm = new ArrayList<Node>();
+
+        // visit all nodes corresponding to declarations inside the let context and store them in
+        // declarations notice that the ctx.let().dec() returns a list because of the use of * or +
+        // in the grammar
+        
+        for (StmContext ts : ctx.thenBranch) {
+            thenStm.add(visit(ts));
+        }
+        for (StmContext es : ctx.elseBranch) {
+            elseStm.add(visit(es));
+        }
         Node condExp = visit(ctx.cond);
-        Node thenExp = visit(ctx.thenBranch);
-        Node elseExp = visit(ctx.elseBranch);
-        return new IfExpNode(condExp, thenExp, elseExp);
+       
+        Node thenExp = visit(ctx.exp(1));
+        Node elseExp = visit(ctx.exp(2));
+        
+        return new IfExpNode(condExp, thenStm, elseStm, thenExp, elseExp);
     }
 
     public Node visitFunExp(FunExpContext ctx) {
@@ -233,13 +250,10 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         return new CallNode(ctx.ID().getText(), args);
     }
     
-    public Node visitArrayExp(ArrayExpContext ctx) {
-        // it is an array access — production named #arrayExp: build the subtree of
-        // the index, store the name of the array declare the result
-        //Node index = visit(ctx.exp());
-        //return new ArrayAccessNode(ctx.ID().getText(), index);
+/*     public Node visitArrayExp(ArrayExpContext ctx) {
+
         return new Node();
-    }
+    } */
 
     public Node visitVarExp(VarExpContext ctx) {
         return new IdNode(ctx.ID().getText());

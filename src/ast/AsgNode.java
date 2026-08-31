@@ -27,7 +27,9 @@ public class AsgNode implements Node {
 
 		else if (st.getvalue() != null)
         	errors.add(new SemanticError("Var id " + id + " is constant and cannot be assigned"));
-
+		else if (st.getdim() > 0)
+			errors.add(new SemanticError("Array identifier " + id + " used without index"));
+		
         return errors ;
 	}
   
