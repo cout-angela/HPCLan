@@ -152,15 +152,24 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         return new IfStmNode(condExp, thenStms, elseStms);
     } */
 
-/*     public Node visitMapredStm(MapredStmContext ctx) {
-        Node condExp = visit(ctx.cond);
-        ArrayList<Node> stms = new ArrayList<Node>();
-        for (StmContext sc : ctx.stm()) {
-            stms.add(visit(sc));
+     public Node visitMapredStm(MapredStmContext ctx) {
+        //Node index = ctx.ID(0);
+        Node n;
+        String arrayId;
+        Node arrayIdx = visit(ctx.exp(0));
+        Node exp = visit(ctx.exp(1));
+        if(ctx.INT() != null){
+            n = new IntNode(Integer.parseInt(ctx.INT().getText()));
+            arrayId = ctx.ID(1).getText();
+        }else{
+            n = visit(ctx.ID(1));
+            arrayId = ctx.ID(2).getText();
         }
-        return new MapredStmNode(condExp, stms);
-    } */
+        
+        return new MapredStmNode(ctx.ID(0).getText(), n, new ArrayStmNode(arrayId, exp, arrayIdx));
+    }
 
+    
     public Node visitExp(ExpContext ctx) {
         if (ctx.op == null) {
             return visit(ctx.value());
