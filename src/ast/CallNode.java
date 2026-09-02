@@ -60,6 +60,7 @@ public class CallNode implements Node {
 	    for (int i = 0; i < parameters.size() ; i = i+1)
 	    		parCode += parameters.get(i).codeGeneration() + "pushr A0\n" ;
 
+		//TODO(): CONTROLLARE se sia addi FP 1 o addi FP 2       (1 sembrerebbe sbagliato????)
 		String updateFP = "addi FP " + parameters.size() + "\n" + "addi FP 1\n";
 
 		String getAR="";

@@ -166,7 +166,7 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
             arrayId = ctx.ID(2).getText();
         }
         
-        return new MapredStmNode(ctx.ID(0).getText(), n, new ArrayStmNode(arrayId, exp, arrayIdx));
+        return new MapredStmNode(ctx.ID(0).getText(), n, new ArrayStmNode(arrayId, exp, arrayIdx), arrayId);
     }
 
     
