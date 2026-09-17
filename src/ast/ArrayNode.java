@@ -50,21 +50,20 @@ public class ArrayNode implements Node {
 	}
   
 	public String codeGeneration() {
-		String err = HPCLanlib.getBoundsErrorLabel();
+		//String err = HPCLanlib.getBoundsErrorLabel();
 
-		if(type.getvalue() == null){
-			String getAR="";
-			for (int i=0; i < nesting - type.getnesting(); i++) 
-				getAR += "store T1 0(T1) \n";
-	    	return 
-				"move AL T1 \n"
-				+ getAR  //risalgo la catena statica
-				+ "subi T1 " + type.getoffset() +"\n" //metto offset sullo stack
-				+ "store A0 0(T1) \n" ; //carico sullo stack il valore all'indirizzo ottenuto
-		}else{
-			//costante (no offset, si trova su symbol table -> non devo risalire la catena)
-			return "storei A0 " + type.getvalue() + " \n";
-		}
+		String getAR="";
+		for (int i=0; i < nesting - type.getnesting(); i++) 
+			getAR += "store T1 0(T1) \n";
+		
+		return 
+			index.codeGeneration() //metto indice sullo stack
+			+ "move AL T1 \n"
+			+ getAR  //risalgo la catena statica
+			+ "subi T1 " + type.getoffset() +"\n" //metto offset sullo stack
+			+ "sub T1 A0 \n"
+			+ "store A0 0(T1) \n" ; //carico sullo stack il valore all'indirizzo ottenuto
+
 	}
 	
 

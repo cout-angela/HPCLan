@@ -259,10 +259,10 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         return new CallNode(ctx.ID().getText(), args);
     }
     
-/*     public Node visitArrayExp(ArrayExpContext ctx) {
-
-        return new Node();
-    } */
+    public Node visitArrayExp(ArrayExpContext ctx) {
+        Node index = visit(ctx.exp());
+        return new ArrayNode(ctx.ID().getText(), index);
+    }
 
     public Node visitVarExp(VarExpContext ctx) {
         return new IdNode(ctx.ID().getText());

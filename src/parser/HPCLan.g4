@@ -47,7 +47,7 @@ value:
 	| '(' exp ')'																			# baseExp
 	| 'if' cond = exp '{' thenBranch +=stm* exp '}' 'else' '{' elseBranch += stm* exp '}'	# ifExp 		//-> IfExpNode
 	| ID '(' (exp (',' exp)*)? ')'	# funExp 																//-> CallNode
-	| ID '[' exp ']'				# arrayExp																//-> ARRIVATE QUI
+	| ID '[' exp ']'				# arrayExp																//-> ArrayNode
 	| ID							# varExp 																//-> IdNode
 	| INT							# intVal 																//-> IntNode
 	| BOOL							# boolVal; 																//-> BoolNode

@@ -39,23 +39,23 @@ public class MapredStmNode implements Node {
 			HashMap<String,STentry> HM = new HashMap<String,STentry>() ;
 
 			ST.add(HM);
-			ST.insert(i, new IntType(), "", 0, null, _nesting + 1) ;
+			ST.insert(i, new IntType(), "", 0, null, _nesting) ;
 
 			iNode = new IdNode(i) ;
-			iNode.checkSemantics(ST, _nesting + 1) ; // check semantics for the index variable
+			iNode.checkSemantics(ST, _nesting) ; // check semantics for the index variable
 			
-			ST.insert("mapred", new IntType(), "", RESdim, null, _nesting + 1) ;
+			ST.insert("mapred", new IntType(), "", RESdim, null, _nesting) ;
 			indexArray = ST.lookup("mapred");
 			
 			//id = ST.top_lookup(index);
 			
-			errors.addAll(n.checkSemantics(ST, _nesting + 1));
+			errors.addAll(n.checkSemantics(ST, _nesting));
 			
 			if(ST.lookup(RESid) != null){
 				RESdim = ST.lookup(RESid).getdim();
 			}
 
-			errors.addAll(RESstm.checkSemantics(ST, _nesting + 1));
+			errors.addAll(RESstm.checkSemantics(ST, _nesting));
 			
 			ST.remove();
 		}
@@ -102,28 +102,23 @@ public class MapredStmNode implements Node {
 			storeIndexArray += "storei A0 " + range.get(h) + "\n" 
 								+ "load A0 " + (indexArray.getoffset()+h) + "(FP) \n" ;
 		}
+
+		String getAR="";
+		for (int i=0; i < st.getnesting() - nesting; i++) 
+			getAR += "store T1 0(T1) \n";
 		
 
 		// formato AR: control_link + parameters + indirizzo di ritorno + dich_locali
 
 		return  
-		// CREAZIONE AR
-				"pushr FP \n"			// carico il frame pointer; decrementa SP a causa della pushr
-			
-				//+ "move AL T1\n"		// risalgo la catena statica
-				//+ getAR
-				//+ "pushr T1 \n"			// salvo sulla pila l'access link statico: si trovera` sempre a FP-1
-				+ "pushr AL"
-				+ "move SP FP \n"
-				+ "addi FP 2\n"				// memorizzo in FP il valore SP - parameters.size() - 1
-				+ "move FP AL \n"		// memorizzo in AL l'indirizzo della catena statica che e` FP-1
-				+ "subi AL 1 \n"
-
-		//DICHIARAZIONE VARIABILE i		
+		//INIZIALIZZIONE VARIABILE i		
 				//+ "pushr RA \n"
-				+ "storei A0 0 \n"  					//dichiarazione i = 0
-				+ "pushr A0"
-				+ storeIndexArray
+				// mettere dentro i.offset n/2
+				n.codeGeneration()
+				+ "move AL T1 \n" 
+				+ getAR  //risalgo la catena statica
+				+ "subi T1 " + iNode.getoffset() +"\n"  //
+				+ "load A0 " + iNode.getoffset() + "(T1) \n"
 				
 		//INIZIO WHILE (CONDIZIONE)	
 				+ "b " + whileCont + "\n"

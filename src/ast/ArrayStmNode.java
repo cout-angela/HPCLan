@@ -72,7 +72,7 @@ public class ArrayStmNode implements Node {
 
 	public String codeGeneration() {
 		//TODO(): da capire se gestione errore OutOfBounds è corretto (si fa qui? da un'altra parte? è corretto con la label??)
-		String err = HPCLanlib.getBoundsErrorLabel();
+		//String err = HPCLanlib.getBoundsErrorLabel();
 
 		String getAR = "";
 		for (int i = 0; i < nesting - st.getnesting(); i++)
@@ -83,12 +83,12 @@ public class ArrayStmNode implements Node {
 			index.codeGeneration()
 
 			// 2. indice < 0
-			+ "storei T1 0 \n"
-			+ "blt A0 T1 " + err + "\n"
+			//+ "storei T1 0 \n"
+			//+ "blt A0 T1 " + err + "\n"
 
 			// 3. indice >= dim
-			+ "storei T1 " + st.getdim() + "\n"
-			+ "bleq T1 A0 " + err + "\n"
+			//+ "storei T1 " + st.getdim() + "\n"
+			//+ "bleq T1 A0 " + err + "\n"
 
 			// 4. indirizzo dell'elemento: base - indice.
 			+ "move AL T1 \n"
