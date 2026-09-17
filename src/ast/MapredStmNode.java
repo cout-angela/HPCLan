@@ -12,38 +12,50 @@ import semanticanalysis.SemanticError;
 import semanticanalysis.SymbolTable;
 
 public class MapredStmNode implements Node {
-	private final String index ;
+	private final String i ;
+	private Node iNode ;
+
 	private final Node n;
-    private final Node arrayStm;
-    private final String arrayId;
-	private Integer arrayDim;
+    private final Node RESstm;
+    private final String RESid;
+	private Integer RESdim;
+
+	private STentry indexArray;
   
-	public MapredStmNode (String _index, Node _n, Node _arrayStm, String _arrayId) {
-    	index = _index ;
+	public MapredStmNode (String _i, Node _n, Node _RESstm, String _RESid) {
+    	i = _i ;
     	n = _n;
-        arrayStm = _arrayStm;
-        arrayId = _arrayId;
+        RESstm = _RESstm;
+        RESid = _RESid;
 	}
   
 	@Override
 	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
 		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 
-        if (ST.top_lookup(index))
-			errors.add(new SemanticError("Identifier " + index + " already declared"));
+        if (ST.top_lookup(i))
+			errors.add(new SemanticError("Identifier " + i + " already declared"));
 		else {
 			HashMap<String,STentry> HM = new HashMap<String,STentry>() ;
 
 			ST.add(HM);
-			ST.insert(index, new IntType(), "", 0, null, _nesting + 1) ;
+			ST.insert(i, new IntType(), "", 0, null, _nesting + 1) ;
+
+			iNode = new IdNode(i) ;
+			iNode.checkSemantics(ST, _nesting + 1) ; // check semantics for the index variable
+			
+			ST.insert("mapred", new IntType(), "", RESdim, null, _nesting + 1) ;
+			indexArray = ST.lookup("mapred");
+			
+			//id = ST.top_lookup(index);
 			
 			errors.addAll(n.checkSemantics(ST, _nesting + 1));
 			
-			if(ST.lookup(arrayId) != null){
-				arrayDim = ST.lookup(arrayId).getdim();
+			if(ST.lookup(RESid) != null){
+				RESdim = ST.lookup(RESid).getdim();
 			}
 
-			errors.addAll(arrayStm.checkSemantics(ST, _nesting + 1));
+			errors.addAll(RESstm.checkSemantics(ST, _nesting + 1));
 			
 			ST.remove();
 		}
@@ -54,7 +66,7 @@ public class MapredStmNode implements Node {
   
 	public Type typeCheck() {
 		if (n.typeCheck() instanceof IntType) {
-		  	return arrayStm.typeCheck();
+		  	return RESstm.typeCheck();
 		} else {
 			System.out.println("Type Error: type mismatch for mapred statement, expected int for n") ;
 			return new ErrorType() ;
@@ -63,15 +75,17 @@ public class MapredStmNode implements Node {
   
 
     /* 
-    index = lista di indici tra 0 e dim-1
-    Collections.shuffle(index)
-    int i = 0;
-    while(i < n)
-        if n > index[i]
-           RES[index[i]] 
-        i++
+    index = lista di indici tra 0 e dim-1  			--> dichiarazione + assegnamento array
+    Collections.shuffle(index) 
+    int i = index.pop; 								--> dichiazione + assegnamento  variabile i
+    while(i < n)   						   			--> accesso a variabili i e n
+        if n > index[i]								--> accesso array di supporto index 
+           RES[j] = EXP  							--> assegnamento array RES 
+        i = index.pop								--> assegnamento variabile i [3, 0, 2, 1] = 2
     }
-*/
+	*/
+
+	
   	public String codeGeneration() {
   		String whileCont = HPCLanlib.freshLabel(); 
   		String whileEnd = HPCLanlib.freshLabel();
@@ -79,11 +93,15 @@ public class MapredStmNode implements Node {
   		String lend = HPCLanlib.freshLabel();
 		Integer i = 0;
 
-        List<Integer> range = IntStream.range(0, arrayDim - 1).boxed().collect(Collectors.toList());
+        List<Integer> range = IntStream.range(0, RESdim - 1).boxed().collect(Collectors.toList());
 		Collections.shuffle(range);
 
-		get
-		
+		String storeIndexArray = "";
+	
+		for(int h=0; h < range.size(); h++){
+			storeIndexArray += "storei A0 " + range.get(h) + "\n" 
+								+ "load A0 " + (indexArray.getoffset()+h) + "(FP) \n" ;
+		}
 		
 
 		// formato AR: control_link + parameters + indirizzo di ritorno + dich_locali
@@ -105,6 +123,7 @@ public class MapredStmNode implements Node {
 				//+ "pushr RA \n"
 				+ "storei A0 0 \n"  					//dichiarazione i = 0
 				+ "pushr A0"
+				+ storeIndexArray
 				
 		//INIZIO WHILE (CONDIZIONE)	
 				+ "b " + whileCont + "\n"

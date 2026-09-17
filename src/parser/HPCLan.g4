@@ -32,7 +32,7 @@ stm:
 	| ID '[' exp ']' '=' exp ';' 										# arrayStm							//-> ArrayStmNode
 	| 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')?  			# ifStm								//-> IfStmNode // ? = 0 o 1 
 	| 'while' '(' exp ')' '{' stm+ '}' 									# whileStm							//-> WhileStmNode
-	| 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'  # mapredStm							//-> ARRIVATE QUI
+	| 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'  # mapredStm							//-> DA FARE
 	; 					
 
 exp:
@@ -47,7 +47,7 @@ value:
 	| '(' exp ')'																			# baseExp
 	| 'if' cond = exp '{' thenBranch +=stm* exp '}' 'else' '{' elseBranch += stm* exp '}'	# ifExp 		//-> IfExpNode
 	| ID '(' (exp (',' exp)*)? ')'	# funExp 																//-> CallNode
-	| ID '[' exp ']'				# arrayExp
+	| ID '[' exp ']'				# arrayExp																//-> ARRIVATE QUI
 	| ID							# varExp 																//-> IdNode
 	| INT							# intVal 																//-> IntNode
 	| BOOL							# boolVal; 																//-> BoolNode

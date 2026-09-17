@@ -2,17 +2,20 @@ package ast;
 
 import java.util.ArrayList;
 
+import evaluator.HPCLanlib;
 import semanticanalysis.STentry;
 import semanticanalysis.SemanticError;
 import semanticanalysis.SymbolTable;
 
-public class IdNode implements Node {
+public class ArrayNode implements Node {
 	private final String id ;
+	private Node index ;
 	private STentry type ;
 	private int nesting;
   
-	public IdNode (String _id) {
+	public ArrayNode (String _id, Node _index) {
 		id = _id ;
+		index = _index ;
 	}
   
 	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
@@ -23,10 +26,11 @@ public class IdNode implements Node {
 	
 		if (st_type == null)
 			errors.add(new SemanticError("Id " + id + " not declared"));
-		else if (st_type.getdim() > 0)
-			errors.add(new SemanticError("Array identifier " + id + " used without index"));
+		else if (st_type.getdim() == 0)
+			errors.add(new SemanticError("Id " + id + " is not an array"));
 		else type = st_type ;
 
+		errors.addAll(index.checkSemantics(ST, _nesting));
 		return errors;
 	}
   
@@ -35,10 +39,19 @@ public class IdNode implements Node {
 			System.out.println("Wrong usage of function identifier");
 			return new ErrorType();
 		}
-		return type.gettype();
+
+		if(index.typeCheck() instanceof IntType) {
+			return type.gettype();
+		}
+	
+		System.out.println("Type Error: index of array "+id+" must be an integer") ;
+		return new ErrorType() ;
+		
 	}
   
 	public String codeGeneration() {
+		String err = HPCLanlib.getBoundsErrorLabel();
+
 		if(type.getvalue() == null){
 			String getAR="";
 			for (int i=0; i < nesting - type.getnesting(); i++) 
