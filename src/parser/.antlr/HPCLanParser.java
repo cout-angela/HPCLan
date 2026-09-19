@@ -300,13 +300,6 @@ public class HPCLanParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class SimpleDecContext extends DecContext {
-		public SimpledecContext simpledec() {
-			return getRuleContext(SimpledecContext.class,0);
-		}
-		public SimpleDecContext(DecContext ctx) { copyFrom(ctx); }
-	}
-	@SuppressWarnings("CheckReturnValue")
 	public static class FunDecContext extends DecContext {
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
@@ -335,6 +328,13 @@ public class HPCLanParser extends Parser {
 		}
 		public FunDecContext(DecContext ctx) { copyFrom(ctx); }
 	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class SimpleDeclContext extends DecContext {
+		public SimpledecContext simpledec() {
+			return getRuleContext(SimpledecContext.class,0);
+		}
+		public SimpleDeclContext(DecContext ctx) { copyFrom(ctx); }
+	}
 
 	public final DecContext dec() throws RecognitionException {
 		DecContext _localctx = new DecContext(_ctx, getState());
@@ -346,7 +346,7 @@ public class HPCLanParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
 			case 1:
-				_localctx = new SimpleDecContext(_localctx);
+				_localctx = new SimpleDeclContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(49);

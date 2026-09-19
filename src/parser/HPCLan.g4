@@ -17,7 +17,7 @@ simpledec:
 	| type ID '[' (INT | ID) ']' ';'	# arrayDec;															//-> ArrayDecNode
 
 dec:
-	simpledec																# simpleDec
+	simpledec																# simpleDecl
 	| type ID '(' (param ( ',' param)*)? ')' '{' simpledec* stm* exp '}'	# funDec; 						//-> FunNode
 
 param:
@@ -32,7 +32,7 @@ stm:
 	| ID '[' exp ']' '=' exp ';' 										# arrayStm							//-> ArrayStmNode
 	| 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')?  			# ifStm								//-> IfStmNode // ? = 0 o 1 
 	| 'while' '(' exp ')' '{' stm+ '}' 									# whileStm							//-> WhileStmNode
-	| 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'  # mapredStm							//-> DA FARE
+	| 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'  # mapredStm							//-> MapredStmNode
 	; 					
 
 exp:

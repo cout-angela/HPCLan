@@ -15,7 +15,7 @@ import parser.SVMParser ;
 public class TestAssembler {
 	public static void main(String[] args) throws Exception {
 
-		String fileName = "prova.simplan.asm";
+		String fileName = "Samples.hpc.asm";
 
 
 				FileInputStream isASM = new FileInputStream(fileName);

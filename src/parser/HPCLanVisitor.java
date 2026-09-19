@@ -31,12 +31,12 @@ public interface HPCLanVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArrayDec(HPCLanParser.ArrayDecContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code simpleDec}
+	 * Visit a parse tree produced by the {@code simpleDecl}
 	 * labeled alternative in {@link HPCLanParser#dec}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSimpleDec(HPCLanParser.SimpleDecContext ctx);
+	T visitSimpleDecl(HPCLanParser.SimpleDeclContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code funDec}
 	 * labeled alternative in {@link HPCLanParser#dec}.

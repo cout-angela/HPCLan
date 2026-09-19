@@ -105,7 +105,7 @@ public class ArrayStmNode implements Node {
 	}
     
 	public String toPrint(String s) {
-		return s + "Asg Array:" + id + st.gettype().toPrint(" ")  + exp.toPrint(s+" ") + "\t" ;
+		return s + "Asg Array:" + id + " "+ exp.toPrint(s+" ") + "\t" ;
 	}
 
 }  

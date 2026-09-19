@@ -1,11 +1,7 @@
 package ast;
 import evaluator.HPCLanlib;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import semanticanalysis.STentry;
 import semanticanalysis.SemanticError;
@@ -17,45 +13,32 @@ public class MapredStmNode implements Node {
 
 	private final Node n;
     private final Node RESstm;
-    private final String RESid;
-	private Integer RESdim;
-
-	private STentry indexArray;
+	private Integer nesting;
+	private STentry iEntry;
   
-	public MapredStmNode (String _i, Node _n, Node _RESstm, String _RESid) {
+	public MapredStmNode (String _i, Node _n, Node _RESstm) {
     	i = _i ;
     	n = _n;
         RESstm = _RESstm;
-        RESid = _RESid;
 	}
   
 	@Override
 	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {
 		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
 
-        if (ST.top_lookup(i))
+        if (ST.lookup(i) != null)
 			errors.add(new SemanticError("Identifier " + i + " already declared"));
 		else {
 			HashMap<String,STentry> HM = new HashMap<String,STentry>() ;
-
+			nesting = _nesting+1;
 			ST.add(HM);
-			ST.insert(i, new IntType(), "", 0, null, _nesting) ;
+			ST.insert(i, new IntType(), "", 0, null, _nesting + 1) ;
 
-			iNode = new IdNode(i) ;
-			iNode.checkSemantics(ST, _nesting) ; // check semantics for the index variable
+			iEntry = ST.lookup(i) ;
 			
-			ST.insert("mapred", new IntType(), "", RESdim, null, _nesting) ;
-			indexArray = ST.lookup("mapred");
+			errors.addAll(n.checkSemantics(ST, _nesting + 1 ));
 			
-			//id = ST.top_lookup(index);
-			
-			errors.addAll(n.checkSemantics(ST, _nesting));
-			
-			if(ST.lookup(RESid) != null){
-				RESdim = ST.lookup(RESid).getdim();
-			}
-
-			errors.addAll(RESstm.checkSemantics(ST, _nesting));
+			errors.addAll(RESstm.checkSemantics(ST, _nesting + 1));
 			
 			ST.remove();
 		}
@@ -85,97 +68,98 @@ public class MapredStmNode implements Node {
     }
 	*/
 
+
+	/* 
+	
+		int i = n/2
+		while (i >= 0) {   // i < 0
+			RES[j] = e
+			i = i - 1
+		}
+
+		i = n/2 + 1
+		while (i < n) {   // n <= i
+			RES[j] = e
+			i = i + 1
+		}
+	*/
+
 	
   	public String codeGeneration() {
   		String whileCont = HPCLanlib.freshLabel(); 
   		String whileEnd = HPCLanlib.freshLabel();
-		String lthen = HPCLanlib.freshLabel(); 
-  		String lend = HPCLanlib.freshLabel();
-		Integer i = 0;
+		String while2Cont = HPCLanlib.freshLabel(); 
+  		String while2End = HPCLanlib.freshLabel();
 
-        List<Integer> range = IntStream.range(0, RESdim - 1).boxed().collect(Collectors.toList());
-		Collections.shuffle(range);
-
-		String storeIndexArray = "";
-	
-		for(int h=0; h < range.size(); h++){
-			storeIndexArray += "storei A0 " + range.get(h) + "\n" 
-								+ "load A0 " + (indexArray.getoffset()+h) + "(FP) \n" ;
-		}
-
-		String getAR="";
-		for (int i=0; i < st.getnesting() - nesting; i++) 
-			getAR += "store T1 0(T1) \n";
-		
 
 		// formato AR: control_link + parameters + indirizzo di ritorno + dich_locali
 
 		return  
+
+		// CREAZIONE AR
+				"pushr FP \n"			// carico il frame pointer; decrementa SP a causa della pushr
+			
+				//+ "move AL T1\n"		// risalgo la catena statica
+				//+ getAR
+				//+ "pushr T1 \n"			// salvo sulla pila l'access link statico: si trovera` sempre a FP-1
+				+ "pushr AL"
+				+ "move SP FP \n"
+				+ "addi FP 2\n"				// memorizzo in FP il valore SP - parameters.size() - 1
+				+ "move FP AL \n"		// memorizzo in AL l'indirizzo della catena statica che e` FP-1
+				+ "subi AL 1 \n"
+
 		//INIZIALIZZIONE VARIABILE i		
 				//+ "pushr RA \n"
 				// mettere dentro i.offset n/2
-				n.codeGeneration()
-				+ "move AL T1 \n" 
-				+ getAR  //risalgo la catena statica
-				+ "subi T1 " + iNode.getoffset() +"\n"  //
-				+ "load A0 " + iNode.getoffset() + "(T1) \n"
+				+ n.codeGeneration()
+				+ "divi A0 2 \n"
+				+ "load A0 " + iEntry.getoffset() + "(FP) \n"
 				
-		//INIZIO WHILE (CONDIZIONE)	
+				
+		// WHILE 1	
 				+ "b " + whileCont + "\n"
 				+ whileCont + ":\n"
-				+ "move AL T1 \n" 
-				+ "subi T1 " + 1 +"\n" //metto offset sullo stack (1 perchè i è l'unica variabile salvata, e se non lo fosse è comunque la prima)
-				+ "store A0 0(T1) \n"  //carico sullo stack il valore all'indirizzo ottenuto 
-				+ "store T1 A0 \n" 
+				+ "strorei T1 0 \n"
+				+ "blt A0 T1 "+ whileEnd + "\n"
+				+ RESstm.codeGeneration()
+				+ "store A0 " + iEntry.getoffset() + "(FP) \n"
+				+ "subi A0 1 \n" 
+				+ "load A0 " + iEntry.getoffset() + "(FP) \n"
+				+ "b " + whileCont + "\n"
+				
+				+ whileEnd + ":\n"
+
+
+		//WHILE 2
+				//INIZIALIZZIONE VARIABILE i		
+				//+ "pushr RA \n"
+				// mettere dentro i.offset n/2
 				+ n.codeGeneration()
-				+ "bleq A0 T1 "+ whileEnd + "\n"
+				+ "divi A0 2 \n"
+				+ "addi A0 1 \n"
+				+ "load A0 " + iEntry.getoffset() + "(FP) \n"
 
-
-		//CORPO WHILE (IF)
-
+				+ "b " + while2Cont + "\n"
+				+ while2Cont + ":\n"
 				+ n.codeGeneration()
-
+				+ "storei T1 " + iEntry.getoffset() + "(FP) \n"
+				+ "bleq A0 T1 "+ while2End + "\n"
+				+ RESstm.codeGeneration()
+				+ "store A0 " + iEntry.getoffset() + "(FP) \n"
+				+ "addi A0 1 \n" 
+				+ "load A0 " + iEntry.getoffset() + "(FP) \n"
+				+ "b " + while2Cont + "\n"
 				
-				+ left.codeGeneration()
-                + "pushr A0 \n" +
-                + right.codeGeneration()+
-                + "popr T1 \n" +
-                + "blt A0 T1 "+ ltrue +"\n"+
-                + "storei A0 0\n"+
-                + "b " + lend + "\n" +
-                + ltrue + ":\n"+
-                + "storei A0 1\n" +
-                + lend + ":\n";
-				
-				
-				+ "storei T1 1 \n"
-				+ "beq A0 T1 "+ lthen + "\n"
-				+ "b " + lend + "\n"
-				+ lthen + ":\n"
-				+ thenStmCode
-				+ lend + ":\n"
+				+ while2End + ":\n"
 
 
-
-				+ "addi SP " + 	declist.size() + "\n"
-				+ "popr RA \n"
-				+ "addi SP " + 	parlist.size() + "\n" // pop di tutti i parametri
-				+ "pop \n"
+		//RIMOZIONE AR
+				+ "addi SP 1 \n" // rimuove la viariabile i
+				+ "pop \n" //rimozione AL
 				+ "store FP 0(FP) \n"
 				+ "move FP AL \n"
 				+ "subi AL 1 \n"
-				+ "pop \n"
-				//+ "rsub RA \n";
-		
-  		return
-			
-			"b " + whileCont + "\n" +
-			whileCont + ":\n" +
-				n.codeGeneration() +
-				"bleq A0 T1 "+ whileEnd + "\n" +
-				stmCode +
-				"b " + whileCont + "\n" +
-	        whileEnd + ":\n" ; 
+				+ "pop \n"; // rimozione control link
   	}
     /* 
 
@@ -202,17 +186,13 @@ public class MapredStmNode implements Node {
     
     */
 
-  	public String toPrint(String s) {
-		String stmStr = "" ;
-	    if (stmList.size() != 0) {
-	    		for (Node stm:stmList){
-	    			stmStr = stmStr + stm.toPrint(s+"  ");
-	    		}
- 	    }
+  	public String toPrint(String s) { 
+ 	    
 	    return
-					s+"While\n"
-							+ cond.toPrint(s+"  ")
-							+ stmStr ;
+					s+"Mapred (\n"
+							+ i + (s+"  ")
+							+ "upto " + n.toPrint(s+"  ")
+							+ ": " + RESstm.toPrint(s+"  )");
 	}
 	  
 } 

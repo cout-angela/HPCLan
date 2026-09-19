@@ -122,6 +122,14 @@ public class HPCLanParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_prog; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterProg(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitProg(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitProg(this);
 			else return visitor.visitChildren(this);
@@ -207,6 +215,14 @@ public class HPCLanParser extends Parser {
 		}
 		public IdDecContext(SimpledecContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterIdDec(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitIdDec(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitIdDec(this);
 			else return visitor.visitChildren(this);
@@ -223,6 +239,14 @@ public class HPCLanParser extends Parser {
 		}
 		public TerminalNode INT() { return getToken(HPCLanParser.INT, 0); }
 		public ArrayDecContext(SimpledecContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterArrayDec(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitArrayDec(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitArrayDec(this);
@@ -316,18 +340,6 @@ public class HPCLanParser extends Parser {
 		}
 	}
 	@SuppressWarnings("CheckReturnValue")
-	public static class SimpleDecContext extends DecContext {
-		public SimpledecContext simpledec() {
-			return getRuleContext(SimpledecContext.class,0);
-		}
-		public SimpleDecContext(DecContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitSimpleDec(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	@SuppressWarnings("CheckReturnValue")
 	public static class FunDecContext extends DecContext {
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
@@ -356,8 +368,36 @@ public class HPCLanParser extends Parser {
 		}
 		public FunDecContext(DecContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterFunDec(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitFunDec(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitFunDec(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	@SuppressWarnings("CheckReturnValue")
+	public static class SimpleDeclContext extends DecContext {
+		public SimpledecContext simpledec() {
+			return getRuleContext(SimpledecContext.class,0);
+		}
+		public SimpleDeclContext(DecContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterSimpleDecl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitSimpleDecl(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitSimpleDecl(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -372,7 +412,7 @@ public class HPCLanParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
 			case 1:
-				_localctx = new SimpleDecContext(_localctx);
+				_localctx = new SimpleDeclContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(49);
@@ -479,6 +519,14 @@ public class HPCLanParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_param; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterParam(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitParam(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitParam(this);
 			else return visitor.visitChildren(this);
@@ -514,6 +562,14 @@ public class HPCLanParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_type; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterType(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitType(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitType(this);
@@ -578,6 +634,14 @@ public class HPCLanParser extends Parser {
 		public TerminalNode INT() { return getToken(HPCLanParser.INT, 0); }
 		public MapredStmContext(StmContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterMapredStm(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitMapredStm(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitMapredStm(this);
 			else return visitor.visitChildren(this);
@@ -593,6 +657,14 @@ public class HPCLanParser extends Parser {
 			return getRuleContext(ExpContext.class,i);
 		}
 		public ArrayStmContext(StmContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterArrayStm(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitArrayStm(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitArrayStm(this);
@@ -612,6 +684,14 @@ public class HPCLanParser extends Parser {
 		}
 		public IfStmContext(StmContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterIfStm(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitIfStm(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitIfStm(this);
 			else return visitor.visitChildren(this);
@@ -630,6 +710,14 @@ public class HPCLanParser extends Parser {
 		}
 		public WhileStmContext(StmContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterWhileStm(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitWhileStm(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitWhileStm(this);
 			else return visitor.visitChildren(this);
@@ -642,6 +730,14 @@ public class HPCLanParser extends Parser {
 			return getRuleContext(ExpContext.class,0);
 		}
 		public AsgStmContext(StmContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterAsgStm(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitAsgStm(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitAsgStm(this);
@@ -855,6 +951,14 @@ public class HPCLanParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_exp; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitExp(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitExp(this);
 			else return visitor.visitChildren(this);
@@ -1020,6 +1124,14 @@ public class HPCLanParser extends Parser {
 		}
 		public BaseExpContext(ValueContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterBaseExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitBaseExp(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitBaseExp(this);
 			else return visitor.visitChildren(this);
@@ -1030,6 +1142,14 @@ public class HPCLanParser extends Parser {
 		public TerminalNode ID() { return getToken(HPCLanParser.ID, 0); }
 		public VarExpContext(ValueContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterVarExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitVarExp(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitVarExp(this);
 			else return visitor.visitChildren(this);
@@ -1039,6 +1159,14 @@ public class HPCLanParser extends Parser {
 	public static class IntValContext extends ValueContext {
 		public TerminalNode INT() { return getToken(HPCLanParser.INT, 0); }
 		public IntValContext(ValueContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterIntVal(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitIntVal(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitIntVal(this);
@@ -1065,6 +1193,14 @@ public class HPCLanParser extends Parser {
 		}
 		public IfExpContext(ValueContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterIfExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitIfExp(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitIfExp(this);
 			else return visitor.visitChildren(this);
@@ -1078,6 +1214,14 @@ public class HPCLanParser extends Parser {
 		}
 		public SignedValContext(ValueContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterSignedVal(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitSignedVal(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitSignedVal(this);
 			else return visitor.visitChildren(this);
@@ -1090,6 +1234,14 @@ public class HPCLanParser extends Parser {
 			return getRuleContext(ExpContext.class,0);
 		}
 		public ArrayExpContext(ValueContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterArrayExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitArrayExp(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitArrayExp(this);
@@ -1107,6 +1259,14 @@ public class HPCLanParser extends Parser {
 		}
 		public FunExpContext(ValueContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterFunExp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitFunExp(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitFunExp(this);
 			else return visitor.visitChildren(this);
@@ -1116,6 +1276,14 @@ public class HPCLanParser extends Parser {
 	public static class BoolValContext extends ValueContext {
 		public TerminalNode BOOL() { return getToken(HPCLanParser.BOOL, 0); }
 		public BoolValContext(ValueContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).enterBoolVal(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof HPCLanListener ) ((HPCLanListener)listener).exitBoolVal(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof HPCLanVisitor ) return ((HPCLanVisitor<? extends T>)visitor).visitBoolVal(this);

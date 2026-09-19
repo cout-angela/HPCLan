@@ -33,6 +33,7 @@ public class ArrayNode implements Node {
 		errors.addAll(index.checkSemantics(ST, _nesting));
 		return errors;
 	}
+
   
 	public Type typeCheck() {
 		if (type.gettype() instanceof ArrowType) {
@@ -46,8 +47,8 @@ public class ArrayNode implements Node {
 	
 		System.out.println("Type Error: index of array "+id+" must be an integer") ;
 		return new ErrorType() ;
-		
 	}
+
   
 	public String codeGeneration() {
 		//String err = HPCLanlib.getBoundsErrorLabel();
@@ -63,8 +64,8 @@ public class ArrayNode implements Node {
 			+ "subi T1 " + type.getoffset() +"\n" //metto offset sullo stack
 			+ "sub T1 A0 \n"
 			+ "store A0 0(T1) \n" ; //carico sullo stack il valore all'indirizzo ottenuto
-
 	}
+	
 	
 
 	public String toPrint(String s) {

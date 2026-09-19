@@ -8,12 +8,14 @@ int fact(int x){
     if (x == 0) { 1 } else { x*fact(x-1) }
     }
 mapred ( i upto n: result[i] = fact(i) )
+n;
+/*
 while (j < n) {
     result[0] = result[0] + result[j] ;
     j = j+1 ;
     }
 result[0] ;
-
+*/
 /*
 
 // calcolo dei fattoriali e di fibonacci in parallelo

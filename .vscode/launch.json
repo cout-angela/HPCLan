@@ -2,6 +2,20 @@
   "version": "2.0.0",
   "configurations": [
     {
+      "type": "java",
+      "name": "PrintASTandSemAn",
+      "request": "launch",
+      "mainClass": "mainPackage.PrintASTandSemAn",
+      "projectName": "HPCLan_f8c1f77c"
+    },
+    {
+      "type": "java",
+      "name": "TestAST",
+      "request": "launch",
+      "mainClass": "mainPackage.TestAST",
+      "projectName": "HPCLan_f8c1f77c"
+    },
+    {
       "name": "Debug ANTLR4 grammar",
       "type": "antlr-debug",
       "request": "launch",

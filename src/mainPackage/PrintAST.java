@@ -23,7 +23,7 @@ public class PrintAST {
 
     public static void main(String[] args) throws Exception {
 
-        String fileName = "prova.simplan";
+        String fileName = "Samples.hpc";
 
         FileInputStream is = new FileInputStream(fileName);
         ANTLRInputStream input = new ANTLRInputStream(is);

@@ -9,7 +9,7 @@ import parser.HPCLanParser.SimpledecContext;
 import parser.HPCLanParser.IdDecContext;
 import parser.HPCLanParser.ArrayDecContext;
 import parser.HPCLanParser.DecContext;
-import parser.HPCLanParser.SimpleDecContext;
+import parser.HPCLanParser.SimpleDeclContext;
 import parser.HPCLanParser.FunDecContext;
 import parser.HPCLanParser.ParamContext;
 import parser.HPCLanParser.TypeContext;
@@ -77,7 +77,7 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         return new ArrayDecNode(name, typeNode, new IdNode(ctx.ID(1).getText()));
     }
 
-    public Node visitSimpleDec(SimpleDecContext ctx) {
+    public Node visitSimpleDecl(SimpleDeclContext ctx) {
         Node typeNode = visit(ctx.simpledec());
         
         return typeNode;
@@ -158,15 +158,20 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         String arrayId;
         Node arrayIdx = visit(ctx.exp(0));
         Node exp = visit(ctx.exp(1));
+        System.out.println("ctx.INT: " + ctx.INT());
+        System.out.println("ctx.ID(1).getText(): " + ctx.ID(1));
+
         if(ctx.INT() != null){
             n = new IntNode(Integer.parseInt(ctx.INT().getText()));
             arrayId = ctx.ID(1).getText();
         }else{
-            n = visit(ctx.ID(1));
+            n = new IdNode(ctx.ID(1).getText());
+            System.out.println("n: " + n);
+
             arrayId = ctx.ID(2).getText();
         }
         
-        return new MapredStmNode(ctx.ID(0).getText(), n, new ArrayStmNode(arrayId, exp, arrayIdx), arrayId);
+        return new MapredStmNode(ctx.ID(0).getText(), n, new ArrayStmNode(arrayId, exp, arrayIdx));
     }
 
     
