@@ -55,7 +55,7 @@ public class ArrayDecNode implements Node {
     
 	@Override
 	public String toPrint(String s) {
-		return s + "Array:" + id + type.toPrint(" ")  + dim.toPrint(s+" ") + "\t" ;
+		return s + "Array: " + id + type.toPrint(s)  + " [" + dim.toPrint("") + "]" ;
 	}
 
 	

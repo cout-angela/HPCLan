@@ -48,7 +48,7 @@ public class LtNode implements Node {
     }
 
     public String toPrint(String s) {
-        return s+"LessThen\n" + left.toPrint(s+"  ") + right.toPrint(s+"  ") ;
+        return s+"LessThen:\n" + left.toPrint(s + "    ") + "\n" + right.toPrint(s + "    ") ;
     }
 
     public Integer constValue(SymbolTable ST) {

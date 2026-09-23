@@ -55,7 +55,7 @@ public class AsgNode implements Node {
 	}  
     
 	public String toPrint(String s) {
-		return s + "Asg:" + id + st.gettype().toPrint(" ")  + exp.toPrint(s+" ") + "\t" ;
+		return s + "Asg: " + id  + "\n" + exp.toPrint(s + "    ");
 	}
 
 }  

@@ -121,23 +121,27 @@ public class FunNode implements Node {
   public String toPrint(String s) {
 		String parlstr="";
 		if (parlist!=null) 
-			for (Node par:parlist){
-			parlstr += par.toPrint(s);
-			}
+			for (Node par:parlist)
+				parlstr += par.toPrint(s+"    ")+ "\n";
+
+
 		String declstr= "";
 		if (declist!=null) 
 		  for (Node dec:declist)
-		    declstr+=dec.toPrint(s+" ");
+		    declstr+=dec.toPrint(s+"    ") + "\n";
+
+			
 		String stmstr= "";
 		if (stmList!=null)
 		  for (Node stm:stmList)
-		    stmstr+=stm.toPrint(s+" ");
-	    return s+"Fun " + id +": " + returntype.toPrint(" ") + "\n\t"
-			   +parlstr + "\n\t"
-		   	   +declstr + "\n\t"
-			   +stmstr
-		   	   + "\n"
-	           +body.toPrint(s+"  ") ;
+		    stmstr+=stm.toPrint(s+"    ") + "\n";
+
+
+	    return s+"Fun " + id +" -> " + returntype.toPrint(" ")
+			   + "\n" + parlstr
+		   	   + declstr
+			   + stmstr
+	           + body.toPrint(s+"    ") ;
 	  }
 	  
 }  

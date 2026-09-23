@@ -69,7 +69,7 @@ public class ArrayNode implements Node {
 	
 
 	public String toPrint(String s) {
-		return s+"Id:" + id  ;
+		return s+"Array: " + id   +"\n" + index.toPrint(s + "    ") ;
 	}
 
 	public Integer constValue(SymbolTable ST) {

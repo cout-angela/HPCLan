@@ -93,12 +93,10 @@ public class IfExpNode implements Node {
   	}
 
   	public String toPrint(String s) {
-	    return
-					s+"If\n"
-							+ guard.toPrint(s+"  ")
-							+ thenbranch.toPrint(s+"  ")
-							+ "\n"
-							+ elsebranch.toPrint(s+"  ") ;
+	    return s+"IfExp:"
+			+ "\n" + guard.toPrint(s + "    ")
+			+ "\n" + s + "    then:\n " + thenbranch.toPrint(s + "    ")
+			+ "\n" + s + "    else:\n" + elsebranch.toPrint(s + "    ") ;
 	}
 	  
 }  

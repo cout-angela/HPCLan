@@ -3,6 +3,20 @@
   "configurations": [
     {
       "type": "java",
+      "name": "TestAssembler",
+      "request": "launch",
+      "mainClass": "mainPackage.TestAssembler",
+      "projectName": "HPCLan_f8c1f77c"
+    },
+    {
+      "type": "java",
+      "name": "OutputAssembler",
+      "request": "launch",
+      "mainClass": "mainPackage.OutputAssembler",
+      "projectName": "HPCLan_f8c1f77c"
+    },
+    {
+      "type": "java",
       "name": "PrintASTandSemAn",
       "request": "launch",
       "mainClass": "mainPackage.PrintASTandSemAn",

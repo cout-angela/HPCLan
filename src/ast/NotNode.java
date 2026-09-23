@@ -42,7 +42,7 @@ public class NotNode implements Node {
     }
 
     public String toPrint(String s) {
-        return s+"Not\n" + body.toPrint(s+"  ") ;
+        return s+"Not:\n" + body.toPrint(s + "    ") ;
     }
 
     public Integer constValue(SymbolTable ST) {

@@ -49,7 +49,7 @@ public class GtNode implements Node {
     }
 
     public String toPrint(String s) {
-        return s+"GT\n" + left.toPrint(s+"  ") + right.toPrint(s+"  ") ;
+        return s+"GT:\n" + left.toPrint(s + "    ") + "\n" + right.toPrint(s + "    ") ;
     }
 
     public Integer constValue(SymbolTable ST) {

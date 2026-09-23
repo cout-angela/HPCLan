@@ -1,8 +1,10 @@
 package ast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import evaluator.HPCLanlib;
+import semanticanalysis.STentry;
 import semanticanalysis.SemanticError ;
 import semanticanalysis.SymbolTable ;
 
@@ -21,6 +23,10 @@ public class ProgNode implements Node {
 	@Override
 	public ArrayList<SemanticError> checkSemantics(SymbolTable ST, int _nesting) {	
 		ArrayList<SemanticError> errors = new ArrayList<SemanticError>();
+
+		
+	    HashMap<String,STentry> H = new HashMap<String, STentry>();
+	    ST.add(H);
 		  
 		for (Node dec : decList)
 				errors.addAll(dec.checkSemantics(ST, _nesting));
@@ -29,6 +35,7 @@ public class ProgNode implements Node {
 				errors.addAll(stm.checkSemantics(ST, _nesting));
 
 		errors.addAll(exp.checkSemantics(ST, _nesting));
+		ST.remove();
 		
 		return errors;
 	}
@@ -72,18 +79,18 @@ public class ProgNode implements Node {
 		String decListStr="";
 		if (decList!=null) 
 			for (Node dec:decList) {
-				decListStr += dec.toPrint(s);
+				decListStr += dec.toPrint(s + "    ") + "\n";
 			}
 
 		String stmListStr= "";
 		if (stmList!=null) 
 		  for (Node stm:stmList) {
-				stmListStr += stm.toPrint(s);
+				stmListStr += stm.toPrint(s + "    ") + "\n";
 		  }
-		return "Prog\n" 
-		+ decListStr + "\n\t"
-		+ stmListStr + "\n\t"
-		+ exp.toPrint("  ") ;
+		return "Prog \n" 
+			+ decListStr 
+			+ stmListStr 
+			+ exp.toPrint(s+"    ") ;
 	}
 
 }  

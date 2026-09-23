@@ -42,7 +42,7 @@ public class DivNode implements Node {
 	  }
 
 	  public String toPrint(String s) {
-		    return s+"Div\n" + left.toPrint(s+"  ") + right.toPrint(s+"  ") ; 
+		    return s+"Div:\n" + left.toPrint(s + "    ") + "\n" + right.toPrint(s + "    ") ; 
 	  }
 
 	  public Integer constValue(SymbolTable ST) {

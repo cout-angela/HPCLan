@@ -81,11 +81,12 @@ public class CallNode implements Node {
   }
 
 	public String toPrint(String s) {
-	    String parlstr="";
+	    String parlstr="\n";
 		for (Node par : parameters)
-			parlstr += par.toPrint(s+"\t") ;
+			parlstr += par.toPrint(s + "        ") + "\n";
 
-		return s+"Call:" + id + "\n" + parlstr ;
+		return s+"Call: " + id 
+		+ "\n" + s + "    Params: " + parlstr;
 	}
 	
 	 

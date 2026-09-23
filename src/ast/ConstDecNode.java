@@ -43,7 +43,7 @@ public class ConstDecNode implements Node {
 	}  
     
 	public String toPrint(String s) {
-		return s + "Var:" + id + type.toPrint(" ")  + exp.toPrint(s+" ") + "\t" ;
+		return s + "Const:" + id + type.toPrint(s)  + "\n" + exp.toPrint(s + "    ") ;
 	}
 
 	

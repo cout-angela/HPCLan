@@ -102,7 +102,8 @@ public class ExecuteVM {
     	int j = 0 ;
  
     	while ( true ) {
-    	    StampaMem(j) ; j=j+1 ;
+    	    //StampaMem(j) ; 
+			j=j+1 ;
     	  	AssemblyClass bytecode = code[ip] ; // fetch
             int tmp ;
             int address;

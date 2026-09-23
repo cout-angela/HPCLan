@@ -39,7 +39,7 @@ public class ParNode implements Node {
   }
   
   public String toPrint(String s) {
-	  return s+"FPar " + id + ":" + type.toPrint(s) ;
+	  return s+"FPar " + id + ":" + type.toPrint("") ;
   }
   
 

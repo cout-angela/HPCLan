@@ -77,24 +77,26 @@ public class IfStmNode implements Node {
   	}
 
   	public String toPrint(String s) {
-		String thenStmStr = "" ;
+
+		String thenStmStr = "\n" + s + "    then:\n " ;
 	    if (thenstmList.size() != 0) {
-	    		for (Node stm:thenstmList){
-	    			thenStmStr = thenStmStr + stm.toPrint(s+"  ");
-	    		}
+	    	for (Node stm:thenstmList){
+	    		thenStmStr = thenStmStr + stm.toPrint(s + "    ") + "\n";
+			}
  	    }
-		String elseStmStr = "" ;
+
+
+		String elseStmStr = "\n" + s + "    else:\n " ;
 	    if (elsestmList.size() != 0) {
-	    		for (Node stm:elsestmList){
-	    			elseStmStr = elseStmStr + stm.toPrint(s+"  ");
-	    		}
+	    	for (Node stm:elsestmList){
+	    		elseStmStr = elseStmStr + stm.toPrint(s + "    ") + "\n";
+			}
  	    }
-	    return
-					s+"If\n"
-							+ guard.toPrint(s+"  ")
-							+ thenStmStr
-							+ "\n"
-							+ elseStmStr;
+
+	    return s + "IfStm:"
+			+ "\n" + guard.toPrint(s + "    ")
+			+ thenStmStr
+			+ elseStmStr;
 	}
 	  
-} 
+}  

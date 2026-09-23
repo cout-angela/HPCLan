@@ -49,7 +49,7 @@ public class LeqNode implements Node {
     }
 
     public String toPrint(String s) {
-        return s+"LessOrEqual\n" + left.toPrint(s+"  ") + right.toPrint(s+"  ") ;
+        return s+"LessOrEqual:\n" + left.toPrint(s + "    ") + "\n" + right.toPrint(s + "    ") ;
     }
 
     public Integer constValue(SymbolTable ST) {

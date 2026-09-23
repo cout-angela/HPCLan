@@ -63,16 +63,15 @@ public class WhileStmNode implements Node {
   	}
 
   	public String toPrint(String s) {
-		String stmStr = "" ;
+		String stmStr = "\n" + s + "do:\n " ;
 	    if (stmList.size() != 0) {
 	    		for (Node stm:stmList){
-	    			stmStr = stmStr + stm.toPrint(s+"  ");
+	    			stmStr = stmStr + stm.toPrint(s + "    ") + "\n";
 	    		}
  	    }
-	    return
-					s+"While\n"
-							+ cond.toPrint(s+"  ")
-							+ stmStr ;
+	    return s+"While\n"
+			+ cond.toPrint(s + "    ")
+			+ stmStr ;
 	}
 	  
 } 

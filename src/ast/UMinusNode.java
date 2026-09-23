@@ -37,7 +37,7 @@ public class UMinusNode implements Node {
     }
 
     public String toPrint(String s) {
-        return s+"Neg\n" + body.toPrint(s+"  ") ;
+        return s+"Neg:\n" + body.toPrint(s + "    ") ;
     }
 
     public Integer constValue(SymbolTable ST) {

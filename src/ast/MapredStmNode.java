@@ -102,7 +102,7 @@ public class MapredStmNode implements Node {
 				//+ "move AL T1\n"		// risalgo la catena statica
 				//+ getAR
 				//+ "pushr T1 \n"			// salvo sulla pila l'access link statico: si trovera` sempre a FP-1
-				+ "pushr AL"
+				+ "pushr AL \n"
 				+ "move SP FP \n"
 				+ "addi FP 2\n"				// memorizzo in FP il valore SP - parameters.size() - 1
 				+ "move FP AL \n"		// memorizzo in AL l'indirizzo della catena statica che e` FP-1
@@ -119,7 +119,7 @@ public class MapredStmNode implements Node {
 		// WHILE 1	
 				+ "b " + whileCont + "\n"
 				+ whileCont + ":\n"
-				+ "strorei T1 0 \n"
+				+ "storei T1 0 \n"
 				+ "blt A0 T1 "+ whileEnd + "\n"
 				+ RESstm.codeGeneration()
 				+ "store A0 " + iEntry.getoffset() + "(FP) \n"
@@ -142,7 +142,7 @@ public class MapredStmNode implements Node {
 				+ "b " + while2Cont + "\n"
 				+ while2Cont + ":\n"
 				+ n.codeGeneration()
-				+ "storei T1 " + iEntry.getoffset() + "(FP) \n"
+				+ "store T1 " + iEntry.getoffset() + "(FP) \n"
 				+ "bleq A0 T1 "+ while2End + "\n"
 				+ RESstm.codeGeneration()
 				+ "store A0 " + iEntry.getoffset() + "(FP) \n"
@@ -188,11 +188,10 @@ public class MapredStmNode implements Node {
 
   	public String toPrint(String s) { 
  	    
-	    return
-					s+"Mapred (\n"
-							+ i + (s+"  ")
-							+ "upto " + n.toPrint(s+"  ")
-							+ ": " + RESstm.toPrint(s+"  )");
+	    return s+"Mapred:\n"
+			+ s + "    " + i
+			+ " upto " + n.toPrint("")
+			+ "\n" + RESstm.toPrint(s+"    ");
 	}
 	  
 } 
