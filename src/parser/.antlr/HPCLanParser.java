@@ -555,6 +555,9 @@ public class HPCLanParser extends Parser {
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class IfStmContext extends StmContext {
+		public StmContext stm;
+		public List<StmContext> thenbranch = new ArrayList<StmContext>();
+		public List<StmContext> elsebranch = new ArrayList<StmContext>();
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
 		}
@@ -651,7 +654,8 @@ public class HPCLanParser extends Parser {
 					{
 					{
 					setState(105);
-					stm();
+					((IfStmContext)_localctx).stm = stm();
+					((IfStmContext)_localctx).thenbranch.add(((IfStmContext)_localctx).stm);
 					}
 					}
 					setState(110);
@@ -676,7 +680,8 @@ public class HPCLanParser extends Parser {
 						{
 						{
 						setState(114);
-						stm();
+						((IfStmContext)_localctx).stm = stm();
+						((IfStmContext)_localctx).elsebranch.add(((IfStmContext)_localctx).stm);
 						}
 						}
 						setState(119);

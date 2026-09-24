@@ -63,6 +63,7 @@ public class ArrayNode implements Node {
 			+ getAR  //risalgo la catena statica
 			+ "subi T1 " + type.getoffset() +"\n" //metto offset sullo stack
 			+ "sub T1 A0 \n"
+			+ "popr T1 \n"
 			+ "store A0 0(T1) \n" ; //carico sullo stack il valore all'indirizzo ottenuto
 	}
 	

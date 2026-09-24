@@ -30,7 +30,7 @@ type:
 stm:
 	ID '=' exp ';' 														# asgStm							//-> AsgNode
 	| ID '[' exp ']' '=' exp ';' 										# arrayStm							//-> ArrayStmNode
-	| 'if' '(' exp ')' '{' stm* '}' ('else' '{' stm* '}')?  			# ifStm								//-> IfStmNode // ? = 0 o 1 
+	| 'if' '(' exp ')' '{' thenbranch += stm* '}' ('else' '{' elsebranch += stm* '}')?  			# ifStm								//-> IfStmNode // ? = 0 o 1 
 	| 'while' '(' exp ')' '{' stm+ '}' 									# whileStm							//-> WhileStmNode
 	| 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'  # mapredStm							//-> MapredStmNode
 	; 					

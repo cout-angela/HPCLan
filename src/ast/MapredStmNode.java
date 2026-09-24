@@ -90,6 +90,12 @@ public class MapredStmNode implements Node {
   		String whileEnd = HPCLanlib.freshLabel();
 		String while2Cont = HPCLanlib.freshLabel(); 
   		String while2End = HPCLanlib.freshLabel();
+		String getAR = "move AL T1 \n";
+		
+		for (int i = 0; i < nesting - iEntry.getnesting(); i++)
+			getAR += "store T1 0(T1) \n";
+			
+		getAR += "subi T1 " + iEntry.getoffset() +"\n";
 
 
 		// formato AR: control_link + parameters + indirizzo di ritorno + dich_locali
@@ -113,7 +119,7 @@ public class MapredStmNode implements Node {
 				// mettere dentro i.offset n/2
 				+ n.codeGeneration()
 				+ "divi A0 2 \n"
-				+ "load A0 " + iEntry.getoffset() + "(FP) \n"
+				+ "pushr A0 \n"
 				
 				
 		// WHILE 1	
@@ -122,9 +128,11 @@ public class MapredStmNode implements Node {
 				+ "storei T1 0 \n"
 				+ "blt A0 T1 "+ whileEnd + "\n"
 				+ RESstm.codeGeneration()
-				+ "store A0 " + iEntry.getoffset() + "(FP) \n"
+				+ getAR
+				+ "store A0 0(T1) \n"
 				+ "subi A0 1 \n" 
-				+ "load A0 " + iEntry.getoffset() + "(FP) \n"
+				+ getAR
+				+ "load A0 0(T1)\n"
 				+ "b " + whileCont + "\n"
 				
 				+ whileEnd + ":\n"
@@ -137,17 +145,20 @@ public class MapredStmNode implements Node {
 				+ n.codeGeneration()
 				+ "divi A0 2 \n"
 				+ "addi A0 1 \n"
-				+ "load A0 " + iEntry.getoffset() + "(FP) \n"
+				+ getAR
+				+ "load A0 0(T1) \n"
 
 				+ "b " + while2Cont + "\n"
 				+ while2Cont + ":\n"
 				+ n.codeGeneration()
-				+ "store T1 " + iEntry.getoffset() + "(FP) \n"
+				+ "store T1 0(T1) \n"
 				+ "bleq A0 T1 "+ while2End + "\n"
 				+ RESstm.codeGeneration()
-				+ "store A0 " + iEntry.getoffset() + "(FP) \n"
-				+ "addi A0 1 \n" 
-				+ "load A0 " + iEntry.getoffset() + "(FP) \n"
+				+ getAR
+				+ "store A0 0(T1) \n"
+				+ "addi A0 1 \n"
+				+ getAR
+				+ "load A0 0(T1) \n"
 				+ "b " + while2Cont + "\n"
 				
 				+ while2End + ":\n"

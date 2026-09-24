@@ -1,4 +1,4 @@
-// Generated from /Users/laneve/Documents/dev/CLP_2025-26/SimpLan2/src/parser/SVM.g4 by ANTLR 4.13.1
+// Generated from src/parser/SVM.g4 by ANTLR 4.13.1
 package parser;
 
 import java.util.HashMap;

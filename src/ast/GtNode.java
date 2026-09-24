@@ -36,6 +36,11 @@ public class GtNode implements Node {
         String ltrue = HPCLanlib.freshLabel();
         String lend = HPCLanlib.freshLabel();
 
+        // A0 = right, T1 = left
+        // left > right
+        // rigth < left
+        // A0 < T1
+
         return  left.codeGeneration()+
                 "pushr A0 \n" +
                 right.codeGeneration()+

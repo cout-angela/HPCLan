@@ -19,18 +19,18 @@ instruction:
     	| STORE REG NUMBER '(' REG ')'	// = REGleft <- memory[NUMBER + REGright]
     	| STOREI REG NUMBER				// = REG <- NUMBER 
     	| MOVE REG REG					// = REGright <- REGleft
-    	| ADD REG REG					// = top <- REGleft + REGright
-    	| ADDI REG NUMBER				// = top <- REGleft + NUMBER
-    	| SUB REG REG 					// = top <- REGleft - REGright
-    	| SUBI REG NUMBER    			// = top <- REGleft - NUMBER
-    	| MUL REG REG					// = top <- REGleft * REGright
-    	| MULI REG NUMBER				// = top <- REGleft * NUMBER
-    	| DIV REG REG					// = top <- REGleft / REGright
-    	| DIVI REG NUMBER				// = top <- REGleft / NUMBER
-    	| PUSH (n=NUMBER | l=LABEL)		// = memory[sp] = number|label , sp = sp-1
-    	| PUSHR REG						// = memory[sp] = REG , sp = sp-1
-    	| POP							// = sp = sp+1
-    	| POPR REG 						// = REG <- memory[sp+1] == STORE REG 0($sp)
+    	| ADD REG REG					// = top <- REGleft + REGright			; sp = sp - 1
+    	| ADDI REG NUMBER				// = REGleft <- REGleft + NUMBER			
+    	| SUB REG REG 					// = top <- REGleft - REGright			; sp = sp - 1
+    	| SUBI REG NUMBER    			// = REGleft <- REGleft - NUMBER
+    	| MUL REG REG					// = top <- REGleft * REGright			; sp = sp - 1
+    	| MULI REG NUMBER				// = REGleft <- REGleft * NUMBER
+    	| DIV REG REG					// = top <- REGleft / REGright			; sp = sp - 1
+    	| DIVI REG NUMBER				// = REGleft <- REGleft / NUMBER
+    	| PUSH (n=NUMBER | l=LABEL)		// = memory[sp] = number|label			; sp = sp-1
+    	| PUSHR REG						// = memory[sp] = REG					; sp = sp-1
+    	| POP							// = sp = sp + 1
+    	| POPR REG 						// = REG <- memory[sp+1]				; sp = sp + 1
     	| BRANCH LABEL					// = ip = LABEL
     	| BRANCHEQ REG REG LABEL		// = if REGleft == REGright => ip = LABEL
     	| BRANCHLESSEQ REG REG LABEL 	// = if REGleft <= REGright => ip = LABEL
@@ -46,16 +46,16 @@ instruction:
  * LEXER RULES
  *------------------------------------------------------------------*/
  
-LOAD  	 : 'load' 	; 	
+LOAD  	 : 'load' 	; 	 
 STORE	 : 'store' 	; 	
-STOREI	 : 'storei' ;  	
-MOVE	 : 'move' 	;
-ADD  	 : 'add'  	;
-ADDI  	 : 'addi'  	;
-SUB	 	 : 'sub' 	;	
-SUBI	 : 'subi' 	;	
-MUL	 	 : 'mul' 	;  	
-MULI	 : 'muli' 	;
+STOREI	 : 'storei' ;   	
+MOVE	 : 'move' 	; 
+ADD  	 : 'add'  	; 
+ADDI  	 : 'addi'  	; 
+SUB	 	 : 'sub' 	;  	
+SUBI	 : 'subi' 	; 	
+MUL	 	 : 'mul' 	; 	
+MULI	 : 'muli' 	; 
 DIV	 	 : 'div' 	;
 DIVI 	 : 'divi' 	;
 PUSH	 : 'push' 	;

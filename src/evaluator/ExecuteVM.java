@@ -26,9 +26,9 @@ public class ExecuteVM {
  
     public void StampaMem(int _j){
     		System.out.print(_j + ": " + code[ip].getCode()) ;
-    		for (int i = MEMSIZE-1; i > sp ; i--){
-    			System.out.print("\t" + memory[i]) ; 			
-    		}
+    		//for (int i = MEMSIZE-1; i > sp ; i--){
+    		//	System.out.print("\t" + memory[i]) ; 			
+    		//}
     		System.out.println("\t ------" + "SP = " + sp + ", FP = " + fp + ", AL = " + al + ", RA = " + ra + ", A0 = " + a0 + ", T1 = " + t1 + ", IP = " + ip  ) ;
     }
   
@@ -102,7 +102,7 @@ public class ExecuteVM {
     	int j = 0 ;
  
     	while ( true ) {
-    	    //StampaMem(j) ; 
+    	    StampaMem(j) ; 
 			j=j+1 ;
     	  	AssemblyClass bytecode = code[ip] ; // fetch
             int tmp ;
@@ -180,7 +180,7 @@ public class ExecuteVM {
                     update(bytecode.getArg1(), read(bytecode.getArg1()) / Integer.parseInt(bytecode.getArg2()) );
                     ip = ip+1 ;
             	  	break;
-                case SVMParser.POPR : //
+                case SVMParser.POPR:
                 	update(bytecode.getArg1(), memory[sp+1]); 
                 	pop() ;
                 	ip = ip+1 ;
@@ -201,6 +201,12 @@ public class ExecuteVM {
           				ip = code[address].getCode() ;
           			} else ip = ip+2 ;
           			break;
+			  case SVMParser.BRANCHLESS :
+		  			if (read(bytecode.getArg1()) < read(bytecode.getArg2())){
+		  				address = ip+1;
+		  				ip = code[address].getCode() ;
+		  			} else ip = ip+2 ;
+				    break;		  				
               case SVMParser.JUMPSUB : 
             	  	ra = ip+1 ;
             	  	address = ip ;

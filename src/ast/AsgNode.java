@@ -51,7 +51,7 @@ public class AsgNode implements Node {
 				"move AL T1 \n" +
 				getAR + //risalgo la catena statica
 				"subi T1 " + st.getoffset() +"\n" + //
-				"load A0 " + st.getoffset() + "(T1) \n" ;
+				"load A0 0(T1) \n" ;
 	}  
     
 	public String toPrint(String s) {
