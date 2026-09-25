@@ -18,19 +18,13 @@ public class SVMVisitorImpl extends SVMBaseVisitor<Void> {
     
     public Void visitAssembly(SVMParser.AssemblyContext ctx) { 
     		visitChildren(ctx); // invoke visitInstruction, for every instruction
-     		System.out.println("labelAdd: " + labelAdd);
-			System.out.println("\n labelRef: " + labelRef);
+
     		for (Integer refAdd : labelRef.keySet()) {
     			int tmp = refAdd ;
-				System.out.println("\n refAdd: " + refAdd);
     			String s = labelRef.get(refAdd) ;
-				System.out.println("s: " + s);
                 if (code[tmp] == null) {
-					System.out.println("\n dentro if prima della rottura(?) "+s);
                 	code[tmp] =  new AssemblyClass(labelAdd.get(s), null, null, null);
                 } else {
-					System.out.println("\n dentro else prima della rottura(?) "+s);
-					System.out.println(labelAdd.get(s));
                 	code[tmp].setArg1(labelAdd.get(s).toString());  // jsub
                 }
             }
@@ -144,6 +138,12 @@ public class SVMVisitorImpl extends SVMBaseVisitor<Void> {
                 break;
 			case SVMLexer.BRANCHLESS:
 				code[i] = new AssemblyClass(SVMParser.BRANCHLESS, ctx.REG(0).toString(), ctx.REG(1).toString(), ctx.LABEL().toString());
+				i = i+1 ;
+	            labelRef.put(i, (ctx.LABEL() != null ? ctx.LABEL().toString() : null));
+	            i = i+1 ;
+				break;
+			case SVMLexer.BRANCHNOTEQ:
+				code[i] = new AssemblyClass(SVMParser.BRANCHNOTEQ, ctx.REG(0).toString(), ctx.REG(1).toString(), ctx.LABEL().toString());
 				i = i+1 ;
 	            labelRef.put(i, (ctx.LABEL() != null ? ctx.LABEL().toString() : null));
 	            i = i+1 ;

@@ -102,7 +102,7 @@ public class ExecuteVM {
     	int j = 0 ;
  
     	while ( true ) {
-    	    StampaMem(j) ; 
+    	    //StampaMem(j) ; 
 			j=j+1 ;
     	  	AssemblyClass bytecode = code[ip] ; // fetch
             int tmp ;
@@ -206,7 +206,13 @@ public class ExecuteVM {
 		  				address = ip+1;
 		  				ip = code[address].getCode() ;
 		  			} else ip = ip+2 ;
-				    break;		  				
+				    break;		
+			  case SVMParser.BRANCHNOTEQ :
+				  	if (read(bytecode.getArg1()) != read(bytecode.getArg2())){
+		  				address = ip+1;
+		  				ip = code[address].getCode() ;
+		  			} else ip = ip+2 ;
+				    break;			
               case SVMParser.JUMPSUB : 
             	  	ra = ip+1 ;
             	  	address = ip ;
