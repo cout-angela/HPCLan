@@ -1,9 +1,9 @@
 grammar HPCLan;
 
-@lexer::members {
+/*@lexer::members {
    //there is a much better way to do this, check the ANTLR guide
    public int lexicalErrors=0;
-}
+}*/
 
 /*------------------------------------------------------------------
  * PARSER RULES
@@ -69,5 +69,9 @@ BLOCKCOMENTS:
 
 //VERY SIMPLISTIC ERROR CHECK FOR THE LEXING PROCESS, THE OUTPUT GOES DIRECTLY TO THE TERMINAL THIS
 // IS WRONG!!!!
-ERR:
-	. { System.out.println("Invalid char: "+ getText()); lexicalErrors++; } -> channel(HIDDEN);
+/*ERR : . {
+        getErrorListenerDispatch().syntaxError(this, null,
+            _tokenStartLine, _tokenStartCharPositionInLine,
+            "carattere non valido: '" + getText() + "'", null);
+        lexicalErrors++;
+      } -> channel(HIDDEN);*/

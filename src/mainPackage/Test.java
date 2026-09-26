@@ -20,6 +20,9 @@ import parser.HPCLanParser ;
 import parser.SVMLexer ;
 import parser.SVMParser ;
 
+import parser.HPCLanErrorListener;
+
+
 public class Test {
 	public static void main(String[] args) throws Exception {
 
@@ -28,16 +31,18 @@ public class Test {
 		FileInputStream is = new FileInputStream(fileName);
 		ANTLRInputStream input = new ANTLRInputStream(is);
 		HPCLanLexer lexer = new HPCLanLexer(input);
+
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 
 		HPCLanParser parser = new HPCLanParser(tokens);
+		
+		parser.removeErrorListeners(); // remove ConsoleErrorListener 
+		parser.addErrorListener(new HPCLanErrorListener()); // add ours 
+
 		HPCLanVisitorImpl visitor = new HPCLanVisitorImpl();
 		Node ast = visitor.visit(parser.prog()); //generazione AST 
 			
-		//SIMPLE CHECK FOR LEXER ERRORS
-		if (lexer.lexicalErrors > 0){
-			System.out.println("The program was not in the right format. Exiting the compilation process now");
-		} else {
+
 			SymbolTable ST = new SymbolTable();	
 			ArrayList<SemanticError> errors = ast.checkSemantics(ST, 0);
 			if(errors.size()>0){
@@ -75,13 +80,19 @@ public class Test {
 
 				//System.out.println("You had: "+lexerASM.lexicalErrors+" lexical errors and "+parserASM.getNumberOfSyntaxErrors()+" syntax errors.");
 				//if (lexerASM.lexicalErrors>0 || parserASM.getNumberOfSyntaxErrors()>0) System.exit(1);
-
+				/*
+				System.out.println("Trovati " + lexErrors.getNumberOfErrors() + " errori lessicali:");
+				if(lexErrors.getNumberOfErrors()!=0){
+					for (String err : lexErrors.getErrors())
+						System.out.println("\t" + err);
+					System.out.println("Compilazione interrotta.");
+					System.exit(1);
+				}
+				*/
 				System.out.println("Starting Virtual Machine...");
 				ExecuteVM vm = new ExecuteVM(visitorSVM.code);
 				vm.cpu();
 				}
 		}
 
-
-	}
 }

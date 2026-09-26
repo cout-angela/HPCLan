@@ -19,7 +19,7 @@ result[1];
 */
 // calcolo dei fattoriali in parallelo
 
-int const n = 13 ;
+int const 0n = 13 ;
 int result[n] ;
 int j = 1 ;
 int fact(int x){

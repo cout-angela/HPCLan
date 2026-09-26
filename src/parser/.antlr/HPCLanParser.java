@@ -20,7 +20,7 @@ public class HPCLanParser extends Parser {
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
 		T__24=25, T__25=26, T__26=27, T__27=28, T__28=29, T__29=30, T__30=31, 
-		BOOL=32, INT=33, ID=34, WS=35, LINECOMENTS=36, BLOCKCOMENTS=37, ERR=38;
+		BOOL=32, INT=33, ID=34, WS=35, LINECOMENTS=36, BLOCKCOMENTS=37;
 	public static final int
 		RULE_prog = 0, RULE_simpledec = 1, RULE_dec = 2, RULE_param = 3, RULE_type = 4, 
 		RULE_stm = 5, RULE_exp = 6, RULE_value = 7;
@@ -45,7 +45,7 @@ public class HPCLanParser extends Parser {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
 			null, null, null, null, null, null, null, null, null, null, null, null, 
 			null, null, null, null, null, null, null, null, "BOOL", "INT", "ID", 
-			"WS", "LINECOMENTS", "BLOCKCOMENTS", "ERR"
+			"WS", "LINECOMENTS", "BLOCKCOMENTS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -1231,7 +1231,7 @@ public class HPCLanParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001&\u00df\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001%\u00df\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0001"+
 		"\u0000\u0005\u0000\u0012\b\u0000\n\u0000\f\u0000\u0015\t\u0000\u0001\u0000"+
