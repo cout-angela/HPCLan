@@ -43,7 +43,7 @@ public class AsgNode implements Node {
 
 	public String codeGeneration() {
 		String getAR = "";
-		for (int i = 0; i < st.getnesting() - nesting; i++)
+		for (int i = 0; i < nesting - st.getnesting(); i++)
 			getAR += "store T1 0(T1) \n";
 
 		return exp.codeGeneration() +
