@@ -90,9 +90,7 @@ Controlli effettuati:
 - costante inizializzata con un'espressione non costante;
 - variabile di `mapred` già dichiarata.
 
-La `SymbolTable` è costituita da: 
-- una pila di `HashMap<String, STentry>` (uno per scope) 
-- una pila parallela degli offset. 
+La `SymbolTable` è costituita da una pila di `HashMap<String, STentry>`, uno per scope, ciascuono con una pila parallela degli offset.
 
 Tra i metodi troviamo ad esempio:
 - `lookup` cerca dallo scope più interno verso l'esterno, mentre
@@ -100,17 +98,18 @@ Tra i metodi troviamo ad esempio:
 
 Ogni `STentry` contiene: 
 - tipo, 
-- offset (per le variabili),
-- label (per le funzioni), 
-- dimensione (per gli array), 
-- valore (per le costanti),
+- offset (per le variabili),  -> 0 per le costanti, parte da uno per variabili e funzioni
+- label (per le funzioni),  -> diverso da stringa vuota solo per le funzioni
+- dimensione (per gli array), -> diverso da 0 solo per gli array
+- valore (per le costanti), -> diverso da 0 solo per le costanti
 - livello di nesting.
+
+All'inserimento di un nuovo elemento nella `STentry`, l'offset viene incrementato di 1 per funzioni e variabili, di 0 per le costanti, mentre per gli array della loro dimensione.
 
 ### Costanti e array
 
-- Le **costanti** non occupano spazio nello stack: il valore è salvato nella `STentry`
-  e, dove la costante è usata, il codice generato carica direttamente il valore (`storei`).
-  Per questo possono essere usate come dimensione di un array o come limite di `mapred`.
+- Le **costanti** non occupano spazio nello stack per cui l'offset assegnato sarà sempre 0. Il valore è salvato direttamente nella `STentry` e, dove la costante è usata, il codice generato carica direttamente il valore (`storei`).
+  Per questo possono essere usate come dimensione di un array.
 - Gli **array** hanno lunghezza costante verificata a tempo di compilazione. Sono allocati
   nello stack con un unico `subi SP <dim>`, e l'elemento `i` si trova a `base - i`.
 
@@ -118,7 +117,7 @@ Ogni `STentry` contiene:
 
 Il linguaggio richiede che alcuni valori siano noti a tempo di compilazione, come per esempio l'inizializzatore
 di una costante tramite espressione (`int const n = 3 + 4;`) e la lunghezza di un array (`int v[n];`). Per
-verificarlo abbiamo aggiunto all'interfaccia `Node` il metodo
+verificarlo abbiamo aggiunto all'interfaccia `Node`, implementata da tutti i nodi del linguaggio, il metodo
 
 ```java
 default Integer constValue(SymbolTable ST) { return null; }
@@ -140,7 +139,7 @@ alcun accesso allo stack e senza risalire la catena statica.
 
 ### Type checking
 
-Dopo l'analisi semantica, `typeCheck()` risale l'AST (bottom-up). I tipi sono `IntType`,
+Dopo l'analisi semantica, `typeCheck()` risale l'AST. I tipi sono `IntType`,
 `BoolType`, `ArrowType` (funzioni: tipi dei parametri → tipo di ritorno) ed `ErrorType`.
 Si controllano tra l'altro numero e tipo dei parametri nelle chiamate, tipo di ritorno
 delle funzioni, tipo di guardie e indici, compatibilità negli assegnamenti.
