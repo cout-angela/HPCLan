@@ -9,7 +9,7 @@ public class STentry {
     private final int offset;
     private final int nesting;
     private final String label;
-    private final Integer value; // added to store the value of the constant
+    private final Integer value; // added to store constant value
 
     public STentry(Type _type, int _offset, String _label, int _dim, Integer _value, int _nesting) {
         type = _type;

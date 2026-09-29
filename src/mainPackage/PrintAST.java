@@ -32,11 +32,11 @@ public class PrintAST {
 
         HPCLanParser parser = new HPCLanParser(tokens);
         HPCLanVisitorImpl visitor = new HPCLanVisitorImpl();
-        Node ast = visitor.visit(parser.prog()); //generazione AST
+        Node ast = visitor.visit(parser.prog()); // generazione AST
 
-        //SIMPLE CHECK FOR LEXER ERRORS
-        if (lexer.lexicalErrors > 0){
-            System.out.println("The program was not in the right format. Exiting the compilation process now") ;
+        // SIMPLE CHECK FOR LEXER ERRORS
+        if (lexer.lexicalErrors > 0) {
+            System.out.println("The program was not in the right format. Exiting the compilation process now");
         } else {
             System.out.println("Visualizing AST...");
             System.out.println(ast.toPrint(""));

@@ -1,4 +1,4 @@
-package evaluator ;
+package evaluator;
 
 public class AssemblyClass {
     private int code;

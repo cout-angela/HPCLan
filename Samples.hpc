@@ -1,8 +1,12 @@
-/*int i = 1;
+/*
+int i = 1;
 
 if (i < 2) { i = i + 1; } else { i=3; }
 
-i;*/
+i;
+*/
+
+// ---------------------------------------
 
 /*
 int i = 0;
@@ -11,13 +15,21 @@ while(i < 3){
     a = !a;
     i = i + 1;
 }
-a;*/
+a;
+*/
+
+// ---------------------------------------
+
 /*
 int result[2];
 mapred(i upto 2: result[i] = i + 2)
 result[1];
 */
+
+// ---------------------------------------
+
 // calcolo dei fattoriali in parallelo
+
 
 int const 0n = 13 ;
 int result[n] ;
@@ -34,6 +46,7 @@ while (j < n) {
     }
 result[0] ;
 
+// ---------------------------------------
 
 // calcolo dei fattoriali e di fibonacci in parallelo
 

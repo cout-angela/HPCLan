@@ -34,7 +34,6 @@ public class AndNode implements Node {
         }
     }
 
- 
     public String codeGeneration() {
         String contlab = HPCLanlib.freshLabel();
         return left.codeGeneration()
@@ -43,7 +42,6 @@ public class AndNode implements Node {
                 + right.codeGeneration()
                 + contlab + ":\n";
     }
-
 
     public String toPrint(String s) {
         return s + "And:\n" + left.toPrint(s + "    ") + "\n" + right.toPrint(s + "    ");

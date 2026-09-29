@@ -30,18 +30,18 @@ import parser.HPCLanParser.IfStmContext;
 import parser.HPCLanParser.MapredStmContext;
 import parser.HPCLanParser.ArrayStmContext;
 
-
-
 public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
 
     public Node visitProg(ProgContext ctx) {
         ArrayList<Node> declarations = new ArrayList<Node>();
         ArrayList<Node> statements = new ArrayList<Node>();
 
-        // visit all nodes corresponding to declarations inside the let context and store them in
-        // declarations notice that the ctx.let().dec() returns a list because of the use of * or +
+        // visit all nodes corresponding to declarations inside the let context and
+        // store them in
+        // declarations notice that the ctx.let().dec() returns a list because of the
+        // use of * or +
         // in the grammar
-        
+
         for (DecContext dc : ctx.dec()) {
             declarations.add(visit(dc));
         }
@@ -55,16 +55,14 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
     }
 
     public Node visitIdDec(IdDecContext ctx) {
-        Node typeNode = visit(ctx.type()); //visit the type
-        Node expNode = visit(ctx.exp()); //visit the exp
+        Node typeNode = visit(ctx.type()); // visit the type
+        Node expNode = visit(ctx.exp()); // visit the exp
         if (ctx.c == null) {
-            return new DecNode(ctx.ID().getText(), typeNode, expNode); //build and return the varNode
+            return new DecNode(ctx.ID().getText(), typeNode, expNode); // build and return the varNode
         }
 
-        return new ConstDecNode(ctx.ID().getText(), typeNode, expNode); //build and return the varNode
+        return new ConstDecNode(ctx.ID().getText(), typeNode, expNode); // build and return the varNode
     }
-
-   
 
     public Node visitArrayDec(ArrayDecContext ctx) {
         Node typeNode = visit(ctx.type());
@@ -79,10 +77,10 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
 
     public Node visitSimpleDecl(SimpleDeclContext ctx) {
         Node typeNode = visit(ctx.simpledec());
-        
+
         return typeNode;
     }
-    
+
     public Node visitFunDec(FunDecContext ctx) {
         ArrayList<ParNode> _param = new ArrayList<ParNode>();
         for (ParamContext vc : ctx.param()) // build the list of parameters with the types
@@ -91,13 +89,13 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         }
 
         ArrayList<Node> innerDec = new ArrayList<Node>(); // this is for the declarations in the body
-        
+
         for (SimpledecContext dc : ctx.simpledec()) {
             innerDec.add(visit(dc));
         }
 
         ArrayList<Node> stms = new ArrayList<Node>(); // this is for the declarations in the body
-        
+
         for (StmContext sc : ctx.stm()) {
             stms.add(visit(sc));
         }
@@ -113,14 +111,14 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
 
     public Node visitType(TypeContext ctx) {
         if (ctx.getText().equals("int")) {
-            return new IntType(); 
-        }else {
+            return new IntType();
+        } else {
             return new BoolType();
         }
     }
 
     public Node visitAsgStm(AsgStmContext ctx) {
-        Node expNode = visit(ctx.exp()); //visit the exp
+        Node expNode = visit(ctx.exp()); // visit the exp
         return new AsgNode(ctx.ID().getText(), expNode);
     }
 
@@ -130,16 +128,16 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         return new ArrayStmNode(ctx.ID().getText(), exp, index);
     }
 
-     public Node visitWhileStm(WhileStmContext ctx) {
+    public Node visitWhileStm(WhileStmContext ctx) {
         Node condExp = visit(ctx.exp());
         ArrayList<Node> stms = new ArrayList<Node>();
         for (StmContext sc : ctx.stm()) {
             stms.add(visit(sc));
         }
         return new WhileStmNode(condExp, stms);
-    } 
+    }
 
-     public Node visitIfStm(IfStmContext ctx) {
+    public Node visitIfStm(IfStmContext ctx) {
         Node condExp = visit(ctx.exp());
         ArrayList<Node> thenStms = new ArrayList<Node>();
         for (StmContext sc : ctx.thenbranch) {
@@ -150,31 +148,27 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
             elseStms.add(visit(sc));
         }
         return new IfStmNode(condExp, thenStms, elseStms);
-    } 
+    }
 
-     public Node visitMapredStm(MapredStmContext ctx) {
-        //Node index = ctx.ID(0);
+    public Node visitMapredStm(MapredStmContext ctx) {
+        // Node index = ctx.ID(0);
         Node n;
         String arrayId;
         Node arrayIdx = visit(ctx.exp(0));
         Node exp = visit(ctx.exp(1));
-        System.out.println("ctx.INT: " + ctx.INT());
-        System.out.println("ctx.ID(1).getText(): " + ctx.ID(1));
 
-        if(ctx.INT() != null){
+        if (ctx.INT() != null) {
             n = new IntNode(Integer.parseInt(ctx.INT().getText()));
             arrayId = ctx.ID(1).getText();
-        }else{
+        } else {
             n = new IdNode(ctx.ID(1).getText());
-            System.out.println("n: " + n);
 
             arrayId = ctx.ID(2).getText();
         }
-        
+
         return new MapredStmNode(ctx.ID(0).getText(), n, new ArrayStmNode(arrayId, exp, arrayIdx));
     }
 
-    
     public Node visitExp(ExpContext ctx) {
         if (ctx.op == null) {
             return visit(ctx.value());
@@ -215,9 +209,9 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
     public Node visitSignedVal(SignedValContext ctx) {
         String operator = ctx.op.getText();
         if (operator.equals("-")) {
-            return new UMinusNode(visit(ctx.value())); 
+            return new UMinusNode(visit(ctx.value()));
         } else if (operator.equals("!")) {
-            return new NotNode(visit(ctx.value())); 
+            return new NotNode(visit(ctx.value()));
         } else {
             return visit(ctx.value()); // operator.equals("+")
         }
@@ -234,10 +228,12 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
         ArrayList<Node> thenStm = new ArrayList<Node>();
         ArrayList<Node> elseStm = new ArrayList<Node>();
 
-        // visit all nodes corresponding to declarations inside the let context and store them in
-        // declarations notice that the ctx.let().dec() returns a list because of the use of * or +
+        // visit all nodes corresponding to declarations inside the let context and
+        // store them in
+        // declarations notice that the ctx.let().dec() returns a list because of the
+        // use of * or +
         // in the grammar
-        
+
         for (StmContext ts : ctx.thenBranch) {
             thenStm.add(visit(ts));
         }
@@ -245,10 +241,10 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
             elseStm.add(visit(es));
         }
         Node condExp = visit(ctx.cond);
-       
+
         Node thenExp = visit(ctx.exp(1));
         Node elseExp = visit(ctx.exp(2));
-        
+
         return new IfExpNode(condExp, thenStm, elseStm, thenExp, elseExp);
     }
 
@@ -263,7 +259,7 @@ public class HPCLanVisitorImpl extends HPCLanBaseVisitor<Node> {
 
         return new CallNode(ctx.ID().getText(), args);
     }
-    
+
     public Node visitArrayExp(ArrayExpContext ctx) {
         Node index = visit(ctx.exp());
         return new ArrayNode(ctx.ID().getText(), index);

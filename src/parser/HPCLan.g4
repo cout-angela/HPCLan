@@ -1,56 +1,60 @@
 grammar HPCLan;
 
 /*@lexer::members {
-   //there is a much better way to do this, check the ANTLR guide
-   public int lexicalErrors=0;
-}*/
+ //there is a much better way to do this, check the ANTLR guide
+ public int
+ lexicalErrors=0;
+ }
+ */
 
 /*------------------------------------------------------------------
  * PARSER RULES
  ------------------------------------------------------------------
  */
 
-prog: dec* stm* exp ';'; 																					//-> ProgNode
+prog: dec* stm* exp ';'; //-> ProgNode
 
 simpledec:
-	type c = 'const'? ID '=' exp ';'	# idDec 															//-> DecNode
-	| type ID '[' (INT | ID) ']' ';'	# arrayDec;															//-> ArrayDecNode
+	type c = 'const'? ID '=' exp ';'	# idDec //-> DecNode
+	| type ID '[' (INT | ID) ']' ';'	# arrayDec; //-> ArrayDecNode
 
 dec:
 	simpledec																# simpleDecl
-	| type ID '(' (param ( ',' param)*)? ')' '{' simpledec* stm* exp '}'	# funDec; 						//-> FunNode
+	| type ID '(' (param ( ',' param)*)? ')' '{' simpledec* stm* exp '}'	# funDec; //-> FunNode
 
-param:
-	type ID; 																								//-> ParNode (? usati per passaggio di parametri fun - per getType e getId)
+param: type ID; //-> ParNode
 
 type:
-	'int' 																									//-> IntType
-	| 'bool'; 																								//-> BoolType
+	'int' //-> IntType
+	| 'bool'; //-> BoolType
 
 stm:
-	ID '=' exp ';' 														# asgStm							//-> AsgNode
-	| ID '[' exp ']' '=' exp ';' 										# arrayStm							//-> ArrayStmNode
-	| 'if' '(' exp ')' '{' thenbranch += stm* '}' ('else' '{' elsebranch += stm* '}')?  			# ifStm								//-> IfStmNode // ? = 0 o 1 
-	| 'while' '(' exp ')' '{' stm+ '}' 									# whileStm							//-> WhileStmNode
-	| 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'  # mapredStm							//-> MapredStmNode
-	; 					
+	ID '=' exp ';'					# asgStm //-> AsgNode
+	| ID '[' exp ']' '=' exp ';'	# arrayStm //-> ArrayStmNode
+	| 'if' '(' exp ')' '{' thenbranch += stm* '}' (
+		'else' '{' elsebranch += stm* '}'
+	)?																	# ifStm
+	| 'while' '(' exp ')' '{' stm+ '}'									# whileStm //-> WhileStmNode
+	| 'mapred' '(' ID 'upto' (INT | ID) ':' ID '[' exp ']' '=' exp ')'	# mapredStm ; //-> MapredStmNode
 
 exp:
-	left = exp op = ('*' | '/') right = exp 																//-> DivNode, MultNode
-	| left = exp op = ('+' | '-') right = exp 																//-> MinusNode, PlusNode
-	| left = exp op = ('==' | '>=' | '<=' | '>' | '<' | '!=') right = exp									//-> EqualNode, GeqNode, GtNode, LeqNode, LtNode, UnEqualNode
-	| left = exp op = ('&&' | '||') right = exp 															//-> AndNode, OrNode
+	left = exp op = ('*' | '/') right = exp //-> DivNode, MultNode
+	| left = exp op = ('+' | '-') right = exp //-> MinusNode, PlusNode
+	| left = exp op = ('==' | '>=' | '<=' | '>' | '<' | '!=') right = exp
+		//-> EqualNode, GeqNode, GtNode, LeqNode, LtNode, UnEqualNode
+	| left = exp op = ('&&' | '||') right = exp //-> AndNode, OrNode
 	| value;
 
 value:
-	op = ('+' | '-' | '!') value															# signedVal 	//-> NotNode, UMinusNode, NotNode
+	op = ('+' | '-' | '!') value															# signedVal //-> NotNode, UMinusNode, NotNode
 	| '(' exp ')'																			# baseExp
-	| 'if' cond = exp '{' thenBranch +=stm* exp '}' 'else' '{' elseBranch += stm* exp '}'	# ifExp 		//-> IfExpNode
-	| ID '(' (exp (',' exp)*)? ')'	# funExp 																//-> CallNode
-	| ID '[' exp ']'				# arrayExp																//-> ArrayNode
-	| ID							# varExp 																//-> IdNode
-	| INT							# intVal 																//-> IntNode
-	| BOOL							# boolVal; 																//-> BoolNode
+	| 'if' cond = exp '{' thenBranch += stm* exp '}' 'else' '{' elseBranch += stm* exp '}'	# ifExp
+		//-> IfExpNode
+	| ID '(' (exp (',' exp)*)? ')'	# funExp //-> CallNode
+	| ID '[' exp ']'				# arrayExp //-> ArrayNode
+	| ID							# varExp //-> IdNode
+	| INT							# intVal //-> IntNode
+	| BOOL							# boolVal; //-> BoolNode
 
 /*------------------------------------------------------------------
  * LEXER RULES
@@ -70,8 +74,10 @@ BLOCKCOMENTS:
 //VERY SIMPLISTIC ERROR CHECK FOR THE LEXING PROCESS, THE OUTPUT GOES DIRECTLY TO THE TERMINAL THIS
 // IS WRONG!!!!
 /*ERR : . {
-        getErrorListenerDispatch().syntaxError(this, null,
-            _tokenStartLine, _tokenStartCharPositionInLine,
-            "carattere non valido: '" + getText() + "'", null);
-        lexicalErrors++;
-      } -> channel(HIDDEN);*/
+ getErrorListenerDispatch().syntaxError(this, null,
+ _tokenStartLine,
+ _tokenStartCharPositionInLine,
+ "carattere non valido: '" + getText() + "'", null);
+ lexicalErrors++;
+ } -> channel(HIDDEN);
+ */

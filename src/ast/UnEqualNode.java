@@ -7,12 +7,12 @@ import semanticanalysis.SymbolTable;
 import java.util.ArrayList;
 
 public class UnEqualNode implements Node {
-    private final Node left ;
-    private final Node right ;
+    private final Node left;
+    private final Node right;
 
-    public UnEqualNode (Node _left, Node _right) {
-        left = _left ;
-        right = _right ;
+    public UnEqualNode(Node _left, Node _right) {
+        left = _left;
+        right = _right;
     }
 
     @Override
@@ -26,13 +26,13 @@ public class UnEqualNode implements Node {
 
     @Override
     public Type typeCheck() {
-        Type tl = left.typeCheck() ;
+        Type tl = left.typeCheck();
         Type tr = right.typeCheck();
         if (tl.getClass().equals(tr.getClass()))
-            return new BoolType() ;
+            return new BoolType();
         else {
-            System.out.println("Type Error: Different types in equality") ;
-            return new ErrorType() ;
+            System.out.println("Type Error: Different types in equality");
+            return new ErrorType();
         }
     }
 
@@ -40,32 +40,31 @@ public class UnEqualNode implements Node {
     public String codeGeneration() {
         String ltrue = HPCLanlib.freshLabel();
         String lend = HPCLanlib.freshLabel();
-        return left.codeGeneration()+
+        return left.codeGeneration() +
                 "pushr A0 \n" +
                 right.codeGeneration() +
                 "popr T1 \n" +
-                "bneq A0 T1 "+ ltrue +"\n"+
-                "storei A0 0\n"+
+                "bneq A0 T1 " + ltrue + "\n" +
+                "storei A0 0\n" +
                 "b " + lend + "\n" +
-                ltrue + ":\n"+
+                ltrue + ":\n" +
                 "storei A0 1\n" +
                 lend + ":\n";
     }
 
     public String toPrint(String s) {
-            return s+"NotEqual:\n" + left.toPrint(s + "    ") + "\n" + right.toPrint(s + "    ") ;
+        return s + "NotEqual:\n" + left.toPrint(s + "    ") + "\n" + right.toPrint(s + "    ");
     }
 
     public Integer constValue(SymbolTable ST) {
-		Integer leftVal = left.constValue(ST);
-		Integer rightVal = right.constValue(ST);
-		  
-		if (leftVal != null && rightVal != null) {
-		    return leftVal != rightVal ? 1 : 0;
+        Integer leftVal = left.constValue(ST);
+        Integer rightVal = right.constValue(ST);
+
+        if (leftVal != null && rightVal != null) {
+            return leftVal != rightVal ? 1 : 0;
         }
-		
-		  
-		return null;
-	  }
+
+        return null;
+    }
 
 }
