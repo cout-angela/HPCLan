@@ -94,7 +94,7 @@ La `SymbolTable` è costituita da:
 - una pila di `HashMap<String, STentry>` (uno per scope) 
 - una pila parallela degli offset. 
 
-I metodi:
+Tra i metodi troviamo ad esempio:
 - `lookup` cerca dallo scope più interno verso l'esterno, mentre
 - `top_lookup` guarda solo lo scope corrente (è quello usato per rilevare le dichiarazioni multiple, quindi lo shadowing tra scope diversi è permesso).
 
@@ -113,6 +113,30 @@ Ogni `STentry` contiene:
   Per questo possono essere usate come dimensione di un array o come limite di `mapred`.
 - Gli **array** hanno lunghezza costante verificata a tempo di compilazione. Sono allocati
   nello stack con un unico `subi SP <dim>`, e l'elemento `i` si trova a `base - i`.
+
+### Valutazione delle espressioni costanti (`constValue`)
+
+Il linguaggio richiede che alcuni valori siano noti a tempo di compilazione, come per esempio l'inizializzatore
+di una costante tramite espressione (`int const n = 3 + 4;`) e la lunghezza di un array (`int v[n];`). Per
+verificarlo abbiamo aggiunto all'interfaccia `Node` il metodo
+
+```java
+default Integer constValue(SymbolTable ST) { return null; }
+```
+
+che restituisce il valore dell'espressione se è costante, oppure `null` se non lo è
+(comportamento di default). Lo ridefiniscono i nodi che possono avere un valore noto.
+
+
+`constValue` viene principalmente chiamato in due punti dell'analisi semantica:
+
+- `ConstDecNode`: se l'inizializzatore vale `null` viene segnalato l'errore *"must be
+  initialized with a constant value"*; altrimenti il valore viene salvato nella `STentry`;
+- `ArrayDecNode`: la dimensione deve essere costante e positiva, altrimenti si segnala errore.
+
+Le costanti vengono quindi risolte a tempo di compilazione: nel codice generato un
+identificatore costante diventa un caricamento immediato del valore (`storei A0 <valore>`), senza
+alcun accesso allo stack e senza risalire la catena statica.
 
 ### Type checking
 
@@ -135,7 +159,7 @@ control link (FP salvato) | access link | parametri | indirizzo di ritorno (RA) 
   costanti e variabili globali dal corpo di una funzione o da `mapred`.
   Il numero di salti lungo la catena è dato da: `nesting` corrente - `nesting` della dichiarazione (salvato nella symbol table).
 - Una variabile con offset `k` si trova all'indirizzo `AL - k`. Gli offset partono da 1 in
-  ogni scope
+  ogni scope.
 - Il valore di ritorno di una funzione è lasciato nel registro `A0`.
 - Il programma principale crea l'activation record globale (`FP` e `AL`) e poi alloca le
   dichiarazioni globali; le funzioni sono emesse in coda dopo `halt`
